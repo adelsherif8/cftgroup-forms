@@ -49,12 +49,17 @@ class CFTG_Updater {
     $release = $this->get_release();
     if ( ! $release ) return $result;
 
+    $raw_base = "https://raw.githubusercontent.com/{$this->repo}/master/assets/img";
     return (object) [
       'name'          => 'CFT Group Forms',
       'slug'          => dirname( $this->slug ),
       'version'       => ltrim( $release->tag_name, 'v' ),
-      'author'        => 'CFT Group',
+      'author'        => 'Adel Emad',
       'download_link' => $this->get_zip_url( $release ),
+      'icons'         => [
+        'svg' => "{$raw_base}/icon.svg",
+        '1x'  => "{$raw_base}/icon.svg",
+      ],
       'sections'      => [ 'changelog' => nl2br( esc_html( $release->body ?? 'Improvements and bug fixes.' ) ) ],
     ];
   }

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Background -->
+  <rect width="256" height="256" rx="24" fill="#1a1a2e"/>
+
+  <!-- Gold accent bar top -->
+  <rect x="0" y="0" width="256" height="6" rx="3" fill="#D4A017"/>
+
+  <!-- Dumpster body -->
+  <rect x="68" y="108" width="120" height="80" rx="6" fill="#D4A017"/>
+  <!-- Dumpster lid -->
+  <rect x="60" y="96" width="136" height="18" rx="4" fill="#B8860B"/>
+  <!-- Lid open flap -->
+  <rect x="92" y="80" width="80" height="20" rx="4" fill="#c9940f" transform="rotate(-12 132 90)"/>
+
+  <!-- Dumpster vertical lines -->
+  <line x1="108" y1="108" x2="108" y2="188" stroke="#B8860B" stroke-width="3" opacity="0.6"/>
+  <line x1="128" y1="108" x2="128" y2="188" stroke="#B8860B" stroke-width="3" opacity="0.6"/>
+  <line x1="148" y1="108" x2="148" y2="188" stroke="#B8860B" stroke-width="3" opacity="0.6"/>
+
+  <!-- Wheels -->
+  <circle cx="92" cy="192" r="10" fill="#0f0f1a" stroke="#D4A017" stroke-width="3"/>
+  <circle cx="164" cy="192" r="10" fill="#0f0f1a" stroke="#D4A017" stroke-width="3"/>
+
+  <!-- CFT text -->
+  <text x="128" y="60" font-family="Arial Black, Arial, sans-serif" font-size="28" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="4">CFT</text>
+
+  <!-- Bottom label -->
+  <text x="128" y="226" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#D4A017" text-anchor="middle" letter-spacing="2">FORMS</text>
+</svg>
