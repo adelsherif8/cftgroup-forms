@@ -15,7 +15,7 @@ define( 'CFTG_VERSION',     '1.0.0' );
 define( 'CFTG_DIR',         plugin_dir_path( __FILE__ ) );
 define( 'CFTG_URL',         plugin_dir_url( __FILE__ ) );
 define( 'CFTG_BASENAME',    plugin_basename( __FILE__ ) );
-define( 'CFTG_GITHUB_REPO', 'YOUR_GITHUB_USERNAME/cftgroup-forms' );
+define( 'CFTG_GITHUB_REPO', 'adelsherif8/cftgroup-forms' );
 
 /* ── Includes ─────────────────────────────────────────────── */
 require_once CFTG_DIR . 'includes/class-ghl-api.php';
