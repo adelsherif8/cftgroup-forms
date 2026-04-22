@@ -1,10 +1,11 @@
 <?php
 /**
  * Plugin Name:  CFT Group Forms
- * Plugin URI:   https://cftgroup.ca
+ * Plugin URI:   https://upwork.com/freelancers/adelsherif8
  * Description:  Multi-step quote forms (Bin Estimate, Scrap Metal, Vehicle Quote) with GoHighLevel CRM integration.
  * Version:      1.0.0
- * Author:       CFT Group
+ * Author:       Adel Emad
+ * Author URI:   https://upwork.com/freelancers/adelsherif8
  * License:      GPL-2.0+
  * Text Domain:  cftgroup-forms
  */
