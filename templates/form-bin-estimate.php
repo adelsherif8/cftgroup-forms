@@ -33,7 +33,6 @@ $styles = cftg_section_styles( 'bin_estimate' );
     <div class="cftg-card">
       <div class="cftg-card-header">
         <div class="cftg-step-info">
-          <span class="cftg-step-label">Step 1 of 6</span>
           <span class="cftg-pct-label">0%</span>
         </div>
         <div class="cftg-prog-track"><div class="cftg-prog-fill" style="width:0%"></div></div>

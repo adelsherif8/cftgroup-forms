@@ -10,7 +10,6 @@
 
       this.progFill  = wrap.querySelector( '.cftg-prog-fill' );
       this.progPct   = wrap.querySelector( '.cftg-pct-label' );
-      this.stepLabel = wrap.querySelector( '.cftg-step-label' );
       this.errorEl   = wrap.querySelector( '.cftg-error-msg' );
 
       this._bind();
@@ -29,9 +28,8 @@
       this._showStep( isSuccess ? this.total + 1 : this.current );
 
       const pct = isSuccess ? 100 : Math.round( ( ( this.current - 1 ) / this.total ) * 100 );
-      if ( this.progFill )  this.progFill.style.width  = pct + '%';
-      if ( this.progPct )   this.progPct.textContent   = pct + '%';
-      if ( this.stepLabel ) this.stepLabel.textContent = 'Step ' + ( isSuccess ? this.total : this.current ) + ' of ' + this.total;
+      if ( this.progFill ) this.progFill.style.width = pct + '%';
+      if ( this.progPct )  this.progPct.textContent  = pct + '%';
     }
 
     /* ── Navigation ── */
