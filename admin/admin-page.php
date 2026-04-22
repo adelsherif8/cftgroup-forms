@@ -55,13 +55,26 @@ function cftg_render_settings_page() {
   $tab   = sanitize_key( $_GET['tab'] ?? 'connection' );
   ?>
   <div class="wrap cftg-admin">
-    <h1 class="cftg-admin-title">
-      <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group" style="height:36px;vertical-align:middle;margin-right:10px">
-      CFT Group Forms
+    <h1 class="cftg-admin-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <span>
+        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group" style="height:36px;vertical-align:middle;margin-right:10px">
+        CFT Group Forms
+      </span>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+        <?php wp_nonce_field( 'cftg_force_check' ); ?>
+        <input type="hidden" name="action" value="cftg_force_update_check">
+        <button type="submit" class="button button-secondary" style="font-size:12px">
+          <span class="dashicons dashicons-update" style="vertical-align:middle;margin-right:4px;font-size:16px;height:16px;width:16px"></span>
+          Check for Updates
+        </button>
+      </form>
     </h1>
 
     <?php if ( $saved ): ?>
       <div class="notice notice-success is-dismissible"><p><strong>Settings saved.</strong></p></div>
+    <?php endif; ?>
+    <?php if ( isset( $_GET['cftg_checked'] ) ): ?>
+      <div class="notice notice-info is-dismissible"><p><strong>Update cache cleared.</strong> WordPress will check for updates on this page.</p></div>
     <?php endif; ?>
 
     <nav class="cftg-tabs nav-tab-wrapper">

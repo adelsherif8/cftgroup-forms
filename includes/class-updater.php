@@ -7,15 +7,44 @@ class CFTG_Updater {
   private $slug;
   private $file;
   private $version;
+  private $transient_key;
 
   public function __construct( $repo, $plugin_file, $version ) {
-    $this->repo    = $repo;          // e.g. "adel/cftgroup-forms"
-    $this->file    = $plugin_file;   // absolute path to main plugin file
-    $this->slug    = plugin_basename( $plugin_file );
-    $this->version = $version;
+    $this->repo          = $repo;
+    $this->file          = $plugin_file;
+    $this->slug          = plugin_basename( $plugin_file );
+    $this->version       = $version;
+    $this->transient_key = 'cftg_gh_release_' . md5( $repo );
 
     add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_update' ] );
     add_filter( 'plugins_api',                           [ $this, 'plugin_info'  ], 20, 3 );
+
+    /* Clear stale cache when admin visits plugins or updates screen */
+    add_action( 'admin_init', [ $this, 'maybe_clear_cache' ] );
+
+    /* Handle manual "Check for updates" button */
+    add_action( 'admin_post_cftg_force_update_check', [ $this, 'force_check' ] );
+  }
+
+  /* ── Clear cache on plugins/update screens so data is always fresh ── */
+  public function maybe_clear_cache() {
+    $screen = get_current_screen();
+    if ( ! $screen ) return;
+    if ( in_array( $screen->id, [ 'plugins', 'update-core', 'update' ], true ) ) {
+      delete_transient( $this->transient_key );
+    }
+  }
+
+  /* ── Handle the force-check button from plugin settings ── */
+  public function force_check() {
+    if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized' );
+    check_admin_referer( 'cftg_force_check' );
+
+    delete_transient( $this->transient_key );
+    delete_site_transient( 'update_plugins' );
+
+    wp_redirect( admin_url( 'plugins.php?cftg_checked=1' ) );
+    exit;
   }
 
   /* ── Check GitHub for a newer release ── */
@@ -64,10 +93,9 @@ class CFTG_Updater {
     ];
   }
 
-  /* ── Fetch latest release from GitHub API ── */
+  /* ── Fetch latest release from GitHub API (30-min cache) ── */
   private function get_release() {
-    $transient_key = 'cftg_gh_release_' . md5( $this->repo );
-    $cached = get_transient( $transient_key );
+    $cached = get_transient( $this->transient_key );
     if ( $cached !== false ) return $cached;
 
     $response = wp_remote_get(
@@ -80,13 +108,12 @@ class CFTG_Updater {
     }
 
     $release = json_decode( wp_remote_retrieve_body( $response ) );
-    set_transient( $transient_key, $release, HOUR_IN_SECONDS * 6 );
+    set_transient( $this->transient_key, $release, MINUTE_IN_SECONDS * 30 );
     return $release;
   }
 
   /* ── Get download URL from release assets ── */
   private function get_zip_url( $release ) {
-    // Prefer a named asset (cftgroup-forms.zip) over the raw zipball
     if ( ! empty( $release->assets ) ) {
       foreach ( $release->assets as $asset ) {
         if ( str_ends_with( $asset->name, '.zip' ) ) {
