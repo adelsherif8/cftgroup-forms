@@ -39,6 +39,8 @@ $styles = cftg_section_styles( 'scrap_metal' );
       </div>
 
       <div class="cftg-card-body">
+        <div class="cftg-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+        <input type="hidden" name="loaded_at" class="cftg-loaded-at">
 
         <!-- Step 1: Scrap type -->
         <div class="cftg-step active" data-step="1">

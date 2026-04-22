@@ -526,6 +526,18 @@ input[type="date"].cftg-input::-webkit-calendar-picker-indicator { cursor: point
 .cftg-success h2 { font-size: 19px; font-weight: 700; color: #111827; margin-bottom: 8px; }
 .cftg-success p  { font-size: 13px; color: #9ca3af; line-height: 1.65; }
 
+/* Honeypot — visually hidden, not display:none (bots detect that) */
+.cftg-hp {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ================================================================
    RESPONSIVE
    ================================================================ */

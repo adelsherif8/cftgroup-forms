@@ -149,6 +149,8 @@
   }
 
   document.addEventListener( 'DOMContentLoaded', () => {
+    const ts = Math.floor( Date.now() / 1000 );
+    document.querySelectorAll( '.cftg-loaded-at' ).forEach( el => el.value = ts );
     document.querySelectorAll( '.cftg-wrap[data-total]' ).forEach( wrap => new CftgForm( wrap ) );
   } );
 
