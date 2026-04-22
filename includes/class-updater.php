@@ -20,19 +20,17 @@ class CFTG_Updater {
     add_filter( 'plugins_api',                           [ $this, 'plugin_info'  ], 20, 3 );
 
     /* Clear stale cache when admin visits plugins or updates screen */
-    add_action( 'admin_init', [ $this, 'maybe_clear_cache' ] );
+    add_action( 'current_screen', [ $this, 'maybe_clear_cache' ] );
 
     /* Handle manual "Check for updates" button */
     add_action( 'admin_post_cftg_force_update_check', [ $this, 'force_check' ] );
   }
 
   /* ── Clear cache on plugins/update screens so data is always fresh ── */
-  public function maybe_clear_cache() {
-    $screen = get_current_screen();
-    if ( ! $screen ) return;
+  public function maybe_clear_cache( $screen ) {
     if ( in_array( $screen->id, [ 'plugins', 'update-core', 'update' ], true ) ) {
-      delete_transient( $this->transient_key );    // our GitHub cache
-      delete_site_transient( 'update_plugins' );   // WordPress's update cache
+      delete_transient( $this->transient_key );
+      delete_site_transient( 'update_plugins' );
     }
   }
 
