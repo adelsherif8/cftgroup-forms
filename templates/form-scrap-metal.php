@@ -43,7 +43,7 @@ $styles = cftg_section_styles( 'scrap_metal' );
         <!-- Step 1: Scrap type -->
         <div class="cftg-step active" data-step="1">
           <h2 class="cftg-q-title">What do you need to scrap?</h2>
-          <p class="cftg-q-sub">Select all materials that apply</p>
+          <p class="cftg-q-sub">Select all that apply — takes 60 seconds</p>
           <div class="cftg-grid g3">
             <?php
             $metals = [
@@ -72,7 +72,7 @@ $styles = cftg_section_styles( 'scrap_metal' );
             <?php endforeach; ?>
           </div>
           <div class="cftg-actions">
-            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="cftg-btn-next" type="button">Get My Offer <i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
 

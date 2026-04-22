@@ -44,7 +44,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         <div class="cftg-step active" data-step="1">
           <div class="cftg-vehicle-banner">
             <div class="cftg-vehicle-banner-icon"><i class="fa-solid fa-car"></i></div>
-            <div><strong>Tell us about your vehicle</strong><span>Fill in the year, make, and model below</span></div>
+            <div><strong>Tell us about your vehicle</strong><span>Year, make and model — takes 60 seconds</span></div>
           </div>
           <div class="cftg-vehicle-grid">
             <div class="cftg-field"><label class="cftg-label">Vehicle Year</label><input type="text" class="cftg-input" name="vehicle_year" placeholder="2018"></div>
@@ -52,7 +52,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
             <div class="cftg-field"><label class="cftg-label">Vehicle Model</label><input type="text" class="cftg-input" name="vehicle_model" placeholder="Civic"></div>
           </div>
           <div class="cftg-actions">
-            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="cftg-btn-next" type="button">Get My Estimate <i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
 

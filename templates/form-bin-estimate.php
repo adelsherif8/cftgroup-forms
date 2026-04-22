@@ -43,7 +43,7 @@ $styles = cftg_section_styles( 'bin_estimate' );
         <!-- Step 1: Dispose type -->
         <div class="cftg-step active" data-step="1">
           <h2 class="cftg-q-title">What do you need to dispose?</h2>
-          <p class="cftg-q-sub">Select all that apply</p>
+          <p class="cftg-q-sub">Select all that apply — takes 60 seconds</p>
           <div class="cftg-grid g3">
             <?php
             $items = [
@@ -62,7 +62,7 @@ $styles = cftg_section_styles( 'bin_estimate' );
             <?php endforeach; ?>
           </div>
           <div class="cftg-actions">
-            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="cftg-btn-next" type="button">Get My Estimate <i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
 
