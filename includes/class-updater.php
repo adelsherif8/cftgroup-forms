@@ -31,7 +31,8 @@ class CFTG_Updater {
     $screen = get_current_screen();
     if ( ! $screen ) return;
     if ( in_array( $screen->id, [ 'plugins', 'update-core', 'update' ], true ) ) {
-      delete_transient( $this->transient_key );
+      delete_transient( $this->transient_key );    // our GitHub cache
+      delete_site_transient( 'update_plugins' );   // WordPress's update cache
     }
   }
 
