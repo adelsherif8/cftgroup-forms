@@ -3,7 +3,7 @@
  * Plugin Name:  CFT Group Forms
  * Plugin URI:   https://upwork.com/freelancers/adelsherif8
  * Description:  Multi-step quote forms (Bin Estimate, Scrap Metal, Vehicle Quote) with GoHighLevel CRM integration.
- * Version:      1.1.1
+ * Version:      1.2.0
  * Author:       Adel Emad
  * Author URI:   https://upwork.com/freelancers/adelsherif8
  * License:      GPL-2.0+
@@ -12,13 +12,14 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'CFTG_VERSION',     '1.1.1' );
+define( 'CFTG_VERSION',     '1.2.0' );
 define( 'CFTG_DIR',         plugin_dir_path( __FILE__ ) );
 define( 'CFTG_URL',         plugin_dir_url( __FILE__ ) );
 define( 'CFTG_BASENAME',    plugin_basename( __FILE__ ) );
 define( 'CFTG_GITHUB_REPO', 'adelsherif8/cftgroup-forms' );
 
 /* ── Includes ─────────────────────────────────────────────── */
+require_once CFTG_DIR . 'includes/helpers.php';
 require_once CFTG_DIR . 'includes/class-ghl-api.php';
 require_once CFTG_DIR . 'includes/class-form-handler.php';
 require_once CFTG_DIR . 'includes/class-updater.php';
@@ -66,6 +67,7 @@ function cftg_enqueue_frontend() {
 add_action( 'admin_enqueue_scripts', 'cftg_enqueue_admin' );
 function cftg_enqueue_admin( $hook ) {
     if ( strpos( $hook, 'cftg' ) === false ) return;
+    wp_enqueue_media();
     wp_enqueue_style( 'cftg-admin', CFTG_URL . 'assets/css/admin.css', [], CFTG_VERSION );
     wp_enqueue_script( 'cftg-admin', CFTG_URL . 'assets/js/admin.js', [ 'jquery' ], CFTG_VERSION, true );
     wp_localize_script( 'cftg-admin', 'cftgAdmin', [
