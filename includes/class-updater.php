@@ -55,7 +55,9 @@ class CFTG_Updater {
     $release = $this->get_release();
     if ( ! $release ) return $transient;
 
-    $latest = ltrim( $release->tag_name, 'v' );
+    $latest   = ltrim( $release->tag_name, 'v' );
+    $raw_base = "https://raw.githubusercontent.com/{$this->repo}/master/assets/img";
+
     if ( version_compare( $this->version, $latest, '<' ) ) {
       $package = $this->get_zip_url( $release );
       if ( $package ) {
@@ -65,6 +67,10 @@ class CFTG_Updater {
           'new_version' => $latest,
           'url'         => "https://github.com/{$this->repo}",
           'package'     => $package,
+          'icons'       => [
+            'svg' => "{$raw_base}/icon.svg",
+            '1x'  => "{$raw_base}/icon.svg",
+          ],
         ];
       }
     }
