@@ -42,7 +42,8 @@ function cftg_design_defaults( $form_type ) {
       'feat_2'          => 'Same-day quotes',
       'feat_3'          => 'Cash on the spot',
       'feat_4'          => 'Zero paperwork',
-      'phone'           => '(416) 800-0000',
+      'phone'           => '613-831-2900',
+      'email'           => 'info@cftgroup.ca',
       'hours'           => 'Mon–Fri 8am–6pm',
     ],
     'scrap_metal' => [
@@ -59,7 +60,8 @@ function cftg_design_defaults( $form_type ) {
       'feat_2'          => 'Multiple locations',
       'feat_3'          => 'Cash on the spot',
       'feat_4'          => 'All metals accepted',
-      'phone'           => '(416) 800-0000',
+      'phone'           => '613-831-2900',
+      'email'           => 'info@cftgroup.ca',
       'hours'           => 'Mon–Fri 8am–6pm',
     ],
     'bin_estimate' => [
@@ -76,7 +78,8 @@ function cftg_design_defaults( $form_type ) {
       'feat_2'          => 'Competitive pricing',
       'feat_3'          => 'Eco-responsible disposal',
       'feat_4'          => 'Commercial & residential',
-      'phone'           => '(416) 800-0000',
+      'phone'           => '613-831-2900',
+      'email'           => 'info@cftgroup.ca',
       'hours'           => 'Mon–Fri 8am–6pm',
     ],
   ];

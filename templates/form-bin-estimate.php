@@ -24,6 +24,7 @@ $styles = cftg_section_styles( 'bin_estimate' );
       </div>
       <div class="cftg-contact-row">
         <div class="cftg-contact-item"><i class="fa-solid fa-phone"></i> <?php echo esc_html( $d['phone'] ); ?></div>
+        <div class="cftg-contact-item"><i class="fa-solid fa-envelope"></i> <?php echo esc_html( $d['email'] ?? 'info@cftgroup.ca' ); ?></div>
         <div class="cftg-contact-item"><i class="fa-solid fa-clock"></i> <?php echo esc_html( $d['hours'] ); ?></div>
       </div>
     </div>

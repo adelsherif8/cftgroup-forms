@@ -39,6 +39,7 @@ function cftg_handle_save_settings() {
         'feat_3'          => sanitize_text_field( $v['feat_3'] ?? '' ),
         'feat_4'          => sanitize_text_field( $v['feat_4'] ?? '' ),
         'phone'           => sanitize_text_field( $v['phone'] ?? '' ),
+        'email'           => sanitize_email( $v['email'] ?? '' ),
         'hours'           => sanitize_text_field( $v['hours'] ?? '' ),
       ] );
     }
@@ -349,7 +350,11 @@ function cftg_design_form_panel( $ft, $label ) {
       <div class="cftg-design-control cftg-contact-inputs">
         <div>
           <label>Phone</label>
-          <input type="text" name="<?php echo $n; ?>[phone]" value="<?php echo esc_attr( $d['phone'] ); ?>" class="regular-text" placeholder="(416) 800-0000">
+          <input type="text" name="<?php echo $n; ?>[phone]" value="<?php echo esc_attr( $d['phone'] ); ?>" class="regular-text" placeholder="613-831-2900">
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="email" name="<?php echo $n; ?>[email]" value="<?php echo esc_attr( $d['email'] ?? 'info@cftgroup.ca' ); ?>" class="regular-text" placeholder="info@cftgroup.ca">
         </div>
         <div>
           <label>Hours</label>

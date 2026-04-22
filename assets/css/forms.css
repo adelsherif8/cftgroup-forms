@@ -191,8 +191,9 @@
 /* Contact row */
 .cftg-contact-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
+  gap: 10px 20px;
   padding-top: 8px;
   border-top: 1px solid rgba(255,255,255,.08);
 }
