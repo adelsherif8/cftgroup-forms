@@ -17,21 +17,50 @@
 }
 
 /* ── Reset ───────────────────────────────────── */
-.cftg-wrap *, .cftg-wrap *::before, .cftg-wrap *::after {
+.cftg-section *, .cftg-section *::before, .cftg-section *::after {
   box-sizing: border-box; margin: 0; padding: 0;
 }
-.cftg-wrap {
+.cftg-section {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ================================================================
-   OUTER WRAP — full-section split grid
+   FULL-WIDTH FULL-HEIGHT SECTION
+   ================================================================ */
+.cftg-section {
+  position: relative;
+  width: 100vw !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  overflow: hidden;
+  background-color: #111;
+}
+
+/* Gradient overlay */
+.cftg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ================================================================
+   OUTER WRAP — split grid (sits above overlay)
    ================================================================ */
 .cftg-wrap {
+  position: relative;
+  z-index: 1;
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   align-items: center !important;
   gap: 48px !important;
+  width: 100% !important;
   max-width: 1120px !important;
   margin: 0 auto !important;
   padding: 72px 40px !important;
@@ -427,8 +456,9 @@ input[type="date"].cftg-input::-webkit-calendar-picker-indicator { cursor: point
 
 /* ── Responsive ──────────────────────────────── */
 @media ( max-width: 768px ) {
-  .cftg-wrap { grid-template-columns: 1fr; padding: 32px 20px; gap: 28px; }
-  .cftg-left { display: none; }
+  .cftg-section { min-height: 100svh !important; }
+  .cftg-wrap { grid-template-columns: 1fr !important; padding: 32px 20px !important; gap: 28px !important; }
+  .cftg-left { display: none !important; }
   .cftg-card-body { padding: 22px 20px 20px; }
   .cftg-card-header { padding: 16px 20px 14px; }
   .cftg-grid.g3 { grid-template-columns: 1fr 1fr; }
