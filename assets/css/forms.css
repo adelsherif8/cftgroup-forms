@@ -147,18 +147,18 @@
   background: rgba(238,174,0,.15);
   border: 1px solid var(--cftg-gold-border);
   border-radius: 99px;
-  padding: 5px 14px;
-  font-size: 11px;
+  padding: 7px 18px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--cftg-gold);
   letter-spacing: .06em;
   width: fit-content;
 }
-.cftg-badge i { font-size: 11px; }
+.cftg-badge i { font-size: 13px; }
 
 /* Title */
 .cftg-title {
-  font-size: clamp(26px, 3.2vw, 40px);
+  font-size: clamp(30px, 3.8vw, 50px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -.03em;
@@ -168,7 +168,7 @@
 
 /* Description */
 .cftg-desc {
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.75;
   color: #ffffff;
   max-width: 400px;
@@ -183,8 +183,8 @@
 .cftg-feat-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 10px;
+  font-size: 16px;
   color: #ffffff;
 }
 .cftg-feat-item i { font-size: 12px; color: var(--cftg-gold); flex-shrink: 0; }
@@ -201,8 +201,8 @@
 .cftg-contact-item {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 15px;
   color: #ffffff;
 }
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
@@ -429,13 +429,13 @@
   border-radius: 10px; padding: 13px 16px; margin-bottom: 18px;
 }
 .cftg-vehicle-banner-icon {
-  width: 36px; height: 36px; border-radius: 8px;
+  width: 48px; height: 48px; border-radius: 10px;
   background: var(--cftg-gold-soft); border: 1px solid var(--cftg-gold-border);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.cftg-vehicle-banner-icon i { color: var(--cftg-gold); font-size: 14px; }
-.cftg-vehicle-banner strong { display: block; font-size: 13px; font-weight: 700; color: #111827; }
-.cftg-vehicle-banner span   { font-size: 12px; color: #9ca3af; }
+.cftg-vehicle-banner-icon i { color: var(--cftg-gold); font-size: 20px; }
+.cftg-vehicle-banner strong { display: block; font-size: 20px; font-weight: 800; color: #111827; }
+.cftg-vehicle-banner span   { font-size: 14px; color: #9ca3af; }
 
 .cftg-vehicle-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
 
