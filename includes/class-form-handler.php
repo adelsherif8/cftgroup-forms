@@ -113,10 +113,11 @@ class CFTG_Form_Handler {
         $f = $this->clean( $_POST );
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_dispose_types' => $f['dispose_types'] ?? '',
-                'cftg_cf_delivery_date' => $f['delivery_date'] ?? '',
-                'cftg_cf_bin_duration'  => $f['bin_duration']  ?? '',
-                'cftg_cf_bin_size'      => $f['bin_size']      ?? '',
+                'cftg_cf_dispose_types'       => $f['dispose_types'] ?? '',
+                'cftg_cf_delivery_date'       => $f['delivery_date'] ?? '',
+                'cftg_cf_bin_duration'        => $f['bin_duration']  ?? '',
+                'cftg_cf_bin_size'            => $f['bin_size']      ?? '',
+                'cftg_cf_bin_delivery_postal' => $f['postal']        ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );
@@ -158,12 +159,13 @@ class CFTG_Form_Handler {
         $f = $this->clean( $_POST );
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_vehicle_year'        => $f['vehicle_year']   ?? '',
-                'cftg_cf_vehicle_make'        => $f['vehicle_make']   ?? '',
-                'cftg_cf_vehicle_model'       => $f['vehicle_model']  ?? '',
-                'cftg_cf_engine_running'      => $f['engine_running'] ?? '',
-                'cftg_cf_parts_missing'       => $f['parts_missing']  ?? '',
-                'cftg_cf_missing_parts_notes' => $f['whats_missing']  ?? '',
+                'cftg_cf_vehicle_year'          => $f['vehicle_year']   ?? '',
+                'cftg_cf_vehicle_make'          => $f['vehicle_make']   ?? '',
+                'cftg_cf_vehicle_model'         => $f['vehicle_model']  ?? '',
+                'cftg_cf_engine_running'        => $f['engine_running'] ?? '',
+                'cftg_cf_parts_missing'         => $f['parts_missing']  ?? '',
+                'cftg_cf_missing_parts_notes'   => $f['whats_missing']  ?? '',
+                'cftg_cf_vehicle_pickup_postal' => $f['postal']         ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );

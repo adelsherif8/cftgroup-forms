@@ -14,6 +14,7 @@ function cftg_handle_save_settings() {
     'cftg_cf_scrap_types',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
+    'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
     'cftg_cf_utm_medium', 'cftg_cf_utm_campaign', 'cftg_cf_utm_content',
     'cftg_cf_utm_keyword', 'cftg_cf_utm_content_std', 'cftg_cf_utm_campaign_std',
     'cftg_cf_gclid',
@@ -170,10 +171,11 @@ function cftg_tab_fields() { ?>
       <h3><span class="cftg-form-badge cftg-badge-bin">Bin Estimate</span></h3>
       <table class="form-table cftg-form-table">
         <?php
-        cftg_field_row( 'cftg_cf_dispose_types', 'Dispose Types',   'TEXT', 'Items to dispose' );
-        cftg_field_row( 'cftg_cf_delivery_date', 'Delivery Date',   'DATE', 'When the bin is needed' );
-        cftg_field_row( 'cftg_cf_bin_duration',  'Rental Duration', 'TEXT', 'How long: One day, One week…' );
-        cftg_field_row( 'cftg_cf_bin_size',      'Bin Size',        'TEXT', '10 yard, 20 yard…' );
+        cftg_field_row( 'cftg_cf_dispose_types',      'Dispose Types',                        'TEXT', 'Items to dispose' );
+        cftg_field_row( 'cftg_cf_delivery_date',      'Delivery Date',                        'DATE', 'When the bin is needed' );
+        cftg_field_row( 'cftg_cf_bin_duration',       'Rental Duration',                      'TEXT', 'How long: One day, One week…' );
+        cftg_field_row( 'cftg_cf_bin_size',           'Bin Size',                             'TEXT', '10 yard, 20 yard…' );
+        cftg_field_row( 'cftg_cf_bin_delivery_postal','Where would you like the bin delivered?','TEXT', 'Postal code from bin delivery step' );
         ?>
       </table>
     </div>
@@ -187,12 +189,13 @@ function cftg_tab_fields() { ?>
       <h3><span class="cftg-form-badge cftg-badge-vehicle">Vehicle Quote</span></h3>
       <table class="form-table cftg-form-table">
         <?php
-        cftg_field_row( 'cftg_cf_vehicle_year',        'Vehicle Year',              'TEXT', 'e.g. 2018' );
-        cftg_field_row( 'cftg_cf_vehicle_make',        'Vehicle Make',              'TEXT', 'e.g. Honda' );
-        cftg_field_row( 'cftg_cf_vehicle_model',       'Vehicle Model',             'TEXT', 'e.g. Civic' );
-        cftg_field_row( 'cftg_cf_engine_running',      'Engine Running',            'TEXT', 'Yes or No' );
-        cftg_field_row( 'cftg_cf_parts_missing',       'Parts Missing',             'TEXT', 'Yes or No' );
-        cftg_field_row( 'cftg_cf_missing_parts_notes', 'Missing Parts Description', 'TEXT', 'What is missing' );
+        cftg_field_row( 'cftg_cf_vehicle_year',          'Vehicle Year',                                    'TEXT', 'e.g. 2018' );
+        cftg_field_row( 'cftg_cf_vehicle_make',          'Vehicle Make',                                    'TEXT', 'e.g. Honda' );
+        cftg_field_row( 'cftg_cf_vehicle_model',         'Vehicle Model',                                   'TEXT', 'e.g. Civic' );
+        cftg_field_row( 'cftg_cf_engine_running',        'Engine Running',                                  'TEXT', 'Yes or No' );
+        cftg_field_row( 'cftg_cf_parts_missing',         'Parts Missing',                                   'TEXT', 'Yes or No' );
+        cftg_field_row( 'cftg_cf_missing_parts_notes',   'Missing Parts Description',                       'TEXT', 'What is missing' );
+        cftg_field_row( 'cftg_cf_vehicle_pickup_postal', 'What is the postal code of the pick-up location?','TEXT', 'Postal code from vehicle postal step' );
         ?>
       </table>
     </div>

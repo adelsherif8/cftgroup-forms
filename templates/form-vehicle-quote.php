@@ -102,8 +102,8 @@ $styles = cftg_section_styles( 'vehicle_quote' );
 
         <!-- Step 4: Postal code -->
         <div class="cftg-step" data-step="4">
-          <h2 class="cftg-q-title">Where are you located?</h2>
-          <p class="cftg-q-sub">Enter your postal code so we can serve you better</p>
+          <h2 class="cftg-q-title">What is the postal code of the pick-up location?</h2>
+          <p class="cftg-q-sub">Enter your postal code so we can arrange pick-up</p>
           <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
