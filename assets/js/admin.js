@@ -33,6 +33,59 @@
     el.textContent = msg; el.className = 'cftg-test-result cftg-result-' + type; el.style.display = 'block';
   }
 
+  /* ── Fetch GHL custom fields ── */
+  function initFetchFields() {
+    const btn = document.getElementById( 'cftg-fetch-fields-btn' );
+    if ( ! btn ) return;
+
+    btn.addEventListener( 'click', () => {
+      const apiKey     = document.getElementById( 'cftg_ghl_api_key' )?.value.trim();
+      const locationId = document.getElementById( 'cftg_ghl_location_id' )?.value.trim();
+      const resultEl   = document.getElementById( 'cftg-fields-result' );
+
+      if ( ! apiKey || ! locationId ) {
+        showResult( resultEl, 'error', 'Save your API Key and Location ID first.' );
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Fetching…';
+
+      const data = new FormData();
+      data.append( 'action',      'cftg_fetch_fields' );
+      data.append( 'nonce',       cftgAdmin.nonce );
+      data.append( 'api_key',     apiKey );
+      data.append( 'location_id', locationId );
+
+      fetch( cftgAdmin.ajaxUrl, { method: 'POST', body: data } )
+        .then( r => r.json() )
+        .then( res => {
+          if ( res.success && res.data.fields.length ) {
+            let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px">';
+            html += '<tr style="background:#f0f0f0"><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Field Name</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Key</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">UUID</th></tr>';
+            res.data.fields.forEach( f => {
+              html += `<tr>
+                <td style="padding:5px 8px;border:1px solid #ddd">${ f.name }</td>
+                <td style="padding:5px 8px;border:1px solid #ddd"><code style="background:#fff8e1;padding:2px 4px">${ f.key }</code></td>
+                <td style="padding:5px 8px;border:1px solid #ddd"><code style="font-size:10px">${ f.id }</code></td>
+              </tr>`;
+            } );
+            html += '</table>';
+            resultEl.innerHTML    = html;
+            resultEl.className    = 'cftg-test-result';
+            resultEl.style.display = 'block';
+          } else {
+            showResult( resultEl, 'error', res.data?.message || 'No fields found.' );
+          }
+        } )
+        .catch( () => showResult( resultEl, 'error', 'Network error.' ) )
+        .finally( () => {
+          btn.disabled    = false;
+          btn.innerHTML   = '<span class="dashicons dashicons-download" style="vertical-align:middle;margin-right:4px"></span> Fetch Fields from GHL';
+        } );
+    } );
+  }
+
   /* ── Copy shortcode buttons ── */
   function initCopyButtons() {
     document.querySelectorAll( '.cftg-copy-btn' ).forEach( btn => {
@@ -109,6 +162,7 @@
 
   document.addEventListener( 'DOMContentLoaded', () => {
     initTestConnection();
+    initFetchFields();
     initCopyButtons();
     initMediaUploader();
     initOpacityRanges();

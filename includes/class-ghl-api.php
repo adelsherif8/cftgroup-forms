@@ -5,7 +5,8 @@ class CFTG_GHL_API {
 
     private string $api_key;
     private string $location_id;
-    private string $base = 'https://rest.gohighlevel.com/v1/';
+    private string $base    = 'https://services.leadconnectorhq.com/';
+    private string $version = '2021-07-28';
 
     public function __construct() {
         $this->api_key     = get_option( 'cftg_ghl_api_key', '' );
@@ -21,7 +22,7 @@ class CFTG_GHL_API {
         $response = wp_remote_get(
             $this->base . 'locations/' . rawurlencode( $this->location_id ),
             [
-                'headers' => [ 'Authorization' => 'Bearer ' . $this->api_key ],
+                'headers' => [ 'Authorization' => 'Bearer ' . $this->api_key, 'Version' => $this->version ],
                 'timeout' => 15,
             ]
         );
@@ -52,6 +53,7 @@ class CFTG_GHL_API {
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->api_key,
                     'Content-Type'  => 'application/json',
+                    'Version'       => $this->version,
                 ],
                 'body'    => wp_json_encode( $payload ),
                 'timeout' => 20,
@@ -79,7 +81,7 @@ class CFTG_GHL_API {
         foreach ( $map as $option_key => $value ) {
             $field_id = get_option( $option_key, '' );
             if ( $field_id && $value !== '' && $value !== null ) {
-                $fields[] = [ 'id' => sanitize_text_field( $field_id ), 'field_value' => sanitize_text_field( (string) $value ) ];
+                $fields[] = [ 'id' => sanitize_text_field( $field_id ), 'value' => sanitize_text_field( (string) $value ) ];
             }
         }
         return $fields;

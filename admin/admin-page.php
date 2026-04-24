@@ -155,7 +155,13 @@ function cftg_tab_fields() { ?>
   <div class="cftg-section">
     <div class="cftg-section-header">
       <h2>GHL Custom Field IDs</h2>
-      <p>Paste each field's ID from GHL → Settings → Custom Fields → Contacts.</p>
+      <p>Paste each field's ID from GHL → Settings → Custom Fields → Contacts. Use the button below to look them up.</p>
+    </div>
+    <div style="margin-bottom:20px">
+      <button type="button" id="cftg-fetch-fields-btn" class="button button-secondary">
+        <span class="dashicons dashicons-download" style="vertical-align:middle;margin-right:4px"></span> Fetch Fields from GHL
+      </button>
+      <div id="cftg-fields-result" class="cftg-test-result" style="display:none;margin-top:10px"></div>
     </div>
     <div class="cftg-field-group">
       <h3><span class="cftg-form-badge cftg-badge-bin">Bin Estimate</span></h3>
