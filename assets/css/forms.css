@@ -169,7 +169,7 @@
 .cftg-desc {
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(255,255,255,.6);
+  color: #ffffff;
   max-width: 400px;
 }
 
@@ -184,7 +184,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: rgba(255,255,255,.7);
+  color: #ffffff;
 }
 .cftg-feat-item i { font-size: 12px; color: var(--cftg-gold); flex-shrink: 0; }
 
@@ -202,7 +202,7 @@
   align-items: center;
   gap: 7px;
   font-size: 12px;
-  color: rgba(255,255,255,.45);
+  color: #ffffff;
 }
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
 
