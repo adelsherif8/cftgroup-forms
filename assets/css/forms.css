@@ -542,11 +542,39 @@ input[type="date"].cftg-input::-webkit-calendar-picker-indicator { cursor: point
    RESPONSIVE
    ================================================================ */
 @media ( max-width: 768px ) {
-  .cftg-section { min-height: 100svh !important; }
-  .cftg-wrap { grid-template-columns: 1fr !important; padding: 32px 18px !important; gap: 24px !important; }
+  .cftg-section {
+    min-height: 100svh !important;
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+  }
+  .cftg-wrap {
+    grid-template-columns: 1fr !important;
+    padding: 16px 14px 32px !important;
+    gap: 0 !important;
+    min-height: 100svh !important;
+    align-items: flex-start !important;
+  }
   .cftg-left { display: none !important; }
-  .cftg-card-body { padding: 20px 18px 18px; }
-  .cftg-card-header { padding: 14px 18px 12px; }
-  .cftg-grid.g3 { grid-template-columns: 1fr 1fr; }
-  .cftg-row { grid-template-columns: 1fr; }
+  .cftg-card {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18) !important;
+    width: 100% !important;
+  }
+  .cftg-card-body { padding: 18px 16px 20px !important; }
+  .cftg-card-header { padding: 14px 16px 12px !important; }
+  .cftg-grid.g3 { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+  .cftg-grid.g2 { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+  .cftg-row { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .cftg-choice-body { padding: 10px 6px 9px !important; min-height: 64px !important; }
+  .cftg-choice-name { font-size: 11px !important; }
+  .cftg-choice-icon { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+  .cftg-q-title { font-size: 16px !important; }
+  .cftg-actions { flex-direction: column !important; gap: 8px !important; }
+  .cftg-wrap .cftg-btn-next,
+  .cftg-wrap .cftg-btn-submit { width: 100% !important; }
+  .cftg-wrap .cftg-btn-back { width: 100% !important; order: 2 !important; }
+  .cftg-yn-grid { grid-template-columns: 1fr 1fr !important; }
+  .cftg-input { font-size: 16px !important; } /* prevent iOS zoom */
+  .cftg-field { margin-bottom: 10px !important; }
+  .cftg-vehicle-grid { gap: 8px !important; }
 }
