@@ -95,23 +95,17 @@ class CFTG_Form_Handler {
         }
     }
 
-    /* ── Build hardcoded UTM custom field entries ── */
+    /* ── UTM + GCLID fields via saved option UUIDs ── */
     private function utm_custom_fields( array $f ): array {
-        $fields = [];
-        $map = [
-            'UTMContent_custom'  => $f['utm_content']  ?? '',
-            'UTMCampaign_Custom' => $f['utm_campaign'] ?? '',
-            'UTMmedium_custom'   => $f['utm_medium']   ?? '',
-            'utm Keyword'        => $f['utm_term']      ?? '',
-            'utm Content'        => $f['utm_content']  ?? '',
-            'utm Campaign'       => $f['utm_campaign'] ?? '',
-        ];
-        foreach ( $map as $field_id => $value ) {
-            if ( $value !== '' ) {
-                $fields[] = [ 'id' => sanitize_text_field( $field_id ), 'value' => sanitize_text_field( $value ) ];
-            }
-        }
-        return $fields;
+        return CFTG_GHL_API::build_custom_fields( [
+            'cftg_cf_utm_medium'       => $f['utm_medium']   ?? '',
+            'cftg_cf_utm_campaign'     => $f['utm_campaign'] ?? '',
+            'cftg_cf_utm_content'      => $f['utm_content']  ?? '',
+            'cftg_cf_utm_keyword'      => $f['utm_term']     ?? '',
+            'cftg_cf_utm_content_std'  => $f['utm_content']  ?? '',
+            'cftg_cf_utm_campaign_std' => $f['utm_campaign'] ?? '',
+            'cftg_cf_gclid'            => $f['gclid']        ?? '',
+        ] );
     }
 
     /* ── Bin Estimate ── */
