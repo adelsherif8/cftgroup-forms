@@ -95,15 +95,26 @@ class CFTG_Form_Handler {
         }
     }
 
+    /* ── UTM helper ── */
+    private function utm_fields( array $f ): array {
+        return [
+            'cftg_cf_utm_source'   => $f['utm_source']   ?? '',
+            'cftg_cf_utm_medium'   => $f['utm_medium']   ?? '',
+            'cftg_cf_utm_campaign' => $f['utm_campaign'] ?? '',
+            'cftg_cf_utm_term'     => $f['utm_term']     ?? '',
+            'cftg_cf_utm_content'  => $f['utm_content']  ?? '',
+        ];
+    }
+
     /* ── Bin Estimate ── */
     private function build_bin_estimate(): array {
         $f = $this->clean( $_POST );
-        $custom = CFTG_GHL_API::build_custom_fields([
+        $custom = CFTG_GHL_API::build_custom_fields( array_merge( [
             'cftg_cf_dispose_types' => $f['dispose_types'] ?? '',
             'cftg_cf_delivery_date' => $f['delivery_date'] ?? '',
             'cftg_cf_bin_duration'  => $f['bin_duration']  ?? '',
             'cftg_cf_bin_size'      => $f['bin_size']      ?? '',
-        ]);
+        ], $this->utm_fields( $f ) ) );
         return [
             'firstName'   => $f['first_name'] ?? '',
             'lastName'    => $f['last_name']  ?? '',
@@ -119,9 +130,9 @@ class CFTG_Form_Handler {
     /* ── Scrap Metal ── */
     private function build_scrap_metal(): array {
         $f = $this->clean( $_POST );
-        $custom = CFTG_GHL_API::build_custom_fields([
+        $custom = CFTG_GHL_API::build_custom_fields( array_merge( [
             'cftg_cf_scrap_types' => $f['scrap_types'] ?? '',
-        ]);
+        ], $this->utm_fields( $f ) ) );
         return [
             'firstName'   => $f['first_name'] ?? '',
             'lastName'    => $f['last_name']  ?? '',
@@ -137,14 +148,14 @@ class CFTG_Form_Handler {
     /* ── Vehicle Quote ── */
     private function build_vehicle_quote(): array {
         $f = $this->clean( $_POST );
-        $custom = CFTG_GHL_API::build_custom_fields([
+        $custom = CFTG_GHL_API::build_custom_fields( array_merge( [
             'cftg_cf_vehicle_year'        => $f['vehicle_year']   ?? '',
             'cftg_cf_vehicle_make'        => $f['vehicle_make']   ?? '',
             'cftg_cf_vehicle_model'       => $f['vehicle_model']  ?? '',
             'cftg_cf_engine_running'      => $f['engine_running'] ?? '',
             'cftg_cf_parts_missing'       => $f['parts_missing']  ?? '',
             'cftg_cf_missing_parts_notes' => $f['whats_missing']  ?? '',
-        ]);
+        ], $this->utm_fields( $f ) ) );
         return [
             'firstName'   => $f['first_name'] ?? '',
             'lastName'    => $f['last_name']  ?? '',

@@ -14,6 +14,8 @@ function cftg_handle_save_settings() {
     'cftg_cf_scrap_types',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
+    'cftg_cf_utm_source', 'cftg_cf_utm_medium', 'cftg_cf_utm_campaign',
+    'cftg_cf_utm_term',   'cftg_cf_utm_content',
   ];
   foreach ( $text_fields as $key ) {
     if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( $_POST[ $key ] ) );
@@ -190,6 +192,18 @@ function cftg_tab_fields() { ?>
         cftg_field_row( 'cftg_cf_engine_running',      'Engine Running',            'TEXT', 'Yes or No' );
         cftg_field_row( 'cftg_cf_parts_missing',       'Parts Missing',             'TEXT', 'Yes or No' );
         cftg_field_row( 'cftg_cf_missing_parts_notes', 'Missing Parts Description', 'TEXT', 'What is missing' );
+        ?>
+      </table>
+    </div>
+    <div class="cftg-field-group">
+      <h3><span class="cftg-form-badge" style="background:#e0e7ff;color:#3730a3;border:1px solid #c7d2fe">UTM Tracking</span></h3>
+      <table class="form-table cftg-form-table">
+        <?php
+        cftg_field_row( 'cftg_cf_utm_source',   'UTM Source',   'TEXT', 'utm_source from URL' );
+        cftg_field_row( 'cftg_cf_utm_medium',   'UTM Medium',   'TEXT', 'utm_medium from URL' );
+        cftg_field_row( 'cftg_cf_utm_campaign', 'UTM Campaign', 'TEXT', 'utm_campaign from URL' );
+        cftg_field_row( 'cftg_cf_utm_term',     'UTM Term',     'TEXT', 'utm_term from URL' );
+        cftg_field_row( 'cftg_cf_utm_content',  'UTM Content',  'TEXT', 'utm_content from URL' );
         ?>
       </table>
     </div>

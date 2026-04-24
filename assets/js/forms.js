@@ -103,6 +103,8 @@
         else                               { data.set( el.name, el.value ); }
       } );
 
+      appendUtms( data );
+
       fetch( cftgData.ajaxUrl, { method: 'POST', body: data } )
         .then( r => r.json() )
         .then( res => {
@@ -148,7 +150,26 @@
     }
   }
 
+  /* ── UTM capture ── */
+  const UTM_KEYS = [ 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content' ];
+
+  function captureUtms() {
+    const params = new URLSearchParams( window.location.search );
+    UTM_KEYS.forEach( k => {
+      const v = params.get( k );
+      if ( v ) sessionStorage.setItem( 'cftg_' + k, v );
+    } );
+  }
+
+  function appendUtms( data ) {
+    UTM_KEYS.forEach( k => {
+      const v = sessionStorage.getItem( 'cftg_' + k );
+      if ( v ) data.append( k, v );
+    } );
+  }
+
   document.addEventListener( 'DOMContentLoaded', () => {
+    captureUtms();
     const ts = Math.floor( Date.now() / 1000 );
     document.querySelectorAll( '.cftg-loaded-at' ).forEach( el => el.value = ts );
     document.querySelectorAll( '.cftg-wrap[data-total]' ).forEach( wrap => new CftgForm( wrap ) );
