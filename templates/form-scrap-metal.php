@@ -6,7 +6,7 @@ $styles = cftg_section_styles( 'scrap_metal' );
 <div class="cftg-section" style="<?php echo $styles['section']; ?>">
   <div class="cftg-overlay" style="<?php echo $styles['overlay']; ?>"></div>
 
-  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="scrap_metal" data-total="2">
+  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="scrap_metal" data-total="3">
 
     <!-- ── Left panel ── -->
     <div class="cftg-left">
@@ -78,8 +78,19 @@ $styles = cftg_section_styles( 'scrap_metal' );
           </div>
         </div>
 
-        <!-- Step 2: Contact -->
+        <!-- Step 2: Postal code -->
         <div class="cftg-step" data-step="2">
+          <h2 class="cftg-q-title">Where are you located?</h2>
+          <p class="cftg-q-sub">Enter your postal code so we can serve you better</p>
+          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
+          <div class="cftg-actions">
+            <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Contact -->
+        <div class="cftg-step" data-step="3">
           <h2 class="cftg-q-title">Almost there!</h2>
           <p class="cftg-q-sub">Enter your contact details to receive your estimate</p>
           <div class="cftg-row">
@@ -88,7 +99,6 @@ $styles = cftg_section_styles( 'scrap_metal' );
           </div>
           <div class="cftg-field"><label class="cftg-label">Email Address</label><input type="email" class="cftg-input" name="email" placeholder="john@example.com"></div>
           <div class="cftg-field"><label class="cftg-label">Phone Number</label><input type="tel" class="cftg-input" name="phone" placeholder="+1 (416) 555-0100"></div>
-          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
             <button class="cftg-btn-submit" type="button">Get My Offer <i class="fa-solid fa-paper-plane"></i></button>
@@ -96,7 +106,7 @@ $styles = cftg_section_styles( 'scrap_metal' );
         </div>
 
         <!-- Success -->
-        <div class="cftg-step" data-step="3">
+        <div class="cftg-step" data-step="4">
           <div class="cftg-success">
             <div class="cftg-success-ring"><i class="fa-solid fa-check"></i></div>
             <h2>Offer Request Sent!</h2>

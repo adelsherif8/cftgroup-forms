@@ -6,7 +6,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
 <div class="cftg-section" style="<?php echo $styles['section']; ?>">
   <div class="cftg-overlay" style="<?php echo $styles['overlay']; ?>"></div>
 
-  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="vehicle_quote" data-total="4">
+  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="vehicle_quote" data-total="5">
 
     <!-- ── Left panel ── -->
     <div class="cftg-left">
@@ -100,8 +100,19 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           </div>
         </div>
 
-        <!-- Step 4: Contact -->
+        <!-- Step 4: Postal code -->
         <div class="cftg-step" data-step="4">
+          <h2 class="cftg-q-title">Where are you located?</h2>
+          <p class="cftg-q-sub">Enter your postal code so we can serve you better</p>
+          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
+          <div class="cftg-actions">
+            <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 5: Contact -->
+        <div class="cftg-step" data-step="5">
           <h2 class="cftg-q-title">Almost there!</h2>
           <p class="cftg-q-sub">Enter your contact details to receive your quote</p>
           <div class="cftg-row">
@@ -110,7 +121,6 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           </div>
           <div class="cftg-field"><label class="cftg-label">Email Address</label><input type="email" class="cftg-input" name="email" placeholder="john@example.com"></div>
           <div class="cftg-field"><label class="cftg-label">Phone Number</label><input type="tel" class="cftg-input" name="phone" placeholder="+1 (416) 555-0100"></div>
-          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
             <button class="cftg-btn-submit" type="button">Get My Quote <i class="fa-solid fa-paper-plane"></i></button>
@@ -118,7 +128,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         </div>
 
         <!-- Success -->
-        <div class="cftg-step" data-step="5">
+        <div class="cftg-step" data-step="6">
           <div class="cftg-success">
             <div class="cftg-success-ring"><i class="fa-solid fa-check"></i></div>
             <h2>Quote Request Sent!</h2>
