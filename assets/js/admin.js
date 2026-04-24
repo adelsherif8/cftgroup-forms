@@ -39,23 +39,14 @@
     if ( ! btn ) return;
 
     btn.addEventListener( 'click', () => {
-      const apiKey     = document.getElementById( 'cftg_ghl_api_key' )?.value.trim();
-      const locationId = document.getElementById( 'cftg_ghl_location_id' )?.value.trim();
-      const resultEl   = document.getElementById( 'cftg-fields-result' );
-
-      if ( ! apiKey || ! locationId ) {
-        showResult( resultEl, 'error', 'Save your API Key and Location ID first.' );
-        return;
-      }
+      const resultEl = document.getElementById( 'cftg-fields-result' );
 
       btn.disabled    = true;
       btn.textContent = 'Fetching…';
 
       const data = new FormData();
-      data.append( 'action',      'cftg_fetch_fields' );
-      data.append( 'nonce',       cftgAdmin.nonce );
-      data.append( 'api_key',     apiKey );
-      data.append( 'location_id', locationId );
+      data.append( 'action', 'cftg_fetch_fields' );
+      data.append( 'nonce',  cftgAdmin.nonce );
 
       fetch( cftgAdmin.ajaxUrl, { method: 'POST', body: data } )
         .then( r => r.json() )

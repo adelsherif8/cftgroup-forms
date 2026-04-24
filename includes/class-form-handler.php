@@ -163,8 +163,8 @@ class CFTG_Form_Handler {
             wp_send_json_error( [ 'message' => 'Unauthorized.' ], 403 );
         }
 
-        $api_key     = sanitize_text_field( $_POST['api_key']     ?? '' );
-        $location_id = sanitize_text_field( $_POST['location_id'] ?? '' );
+        $api_key     = get_option( 'cftg_ghl_api_key', '' );
+        $location_id = get_option( 'cftg_ghl_location_id', '' );
 
         $response = wp_remote_get(
             'https://services.leadconnectorhq.com/locations/' . rawurlencode( $location_id ) . '/customFields',
