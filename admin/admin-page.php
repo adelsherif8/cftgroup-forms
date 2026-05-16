@@ -11,7 +11,7 @@ function cftg_handle_save_settings() {
   $text_fields = [
     'cftg_ghl_api_key', 'cftg_ghl_location_id',
     'cftg_cf_dispose_types', 'cftg_cf_delivery_date', 'cftg_cf_bin_duration', 'cftg_cf_bin_size',
-    'cftg_cf_scrap_types',
+    'cftg_cf_scrap_types', 'cftg_cf_load_size',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
@@ -29,22 +29,24 @@ function cftg_handle_save_settings() {
     if ( isset( $_POST[ $key ] ) && is_array( $_POST[ $key ] ) ) {
       $v = wp_unslash( $_POST[ $key ] );
       update_option( $key, [
-        'bg_image'        => esc_url_raw( $v['bg_image'] ?? '' ),
-        'overlay_color_l' => sanitize_hex_color( $v['overlay_color_l'] ?? '#0a0a0a' ) ?: '#0a0a0a',
-        'overlay_color_r' => sanitize_hex_color( $v['overlay_color_r'] ?? '#0f1520' ) ?: '#0f1520',
-        'overlay_opacity' => max( 0, min( 100, intval( $v['overlay_opacity'] ?? 75 ) ) ),
-        'accent_color'    => sanitize_hex_color( $v['accent_color'] ?? '#eeae00' ) ?: '#eeae00',
-        'badge'           => sanitize_text_field( $v['badge'] ?? '' ),
-        'title'           => sanitize_text_field( $v['title'] ?? '' ),
-        'title_accent'    => sanitize_text_field( $v['title_accent'] ?? '' ),
-        'desc'            => sanitize_textarea_field( $v['desc'] ?? '' ),
-        'feat_1'          => sanitize_text_field( $v['feat_1'] ?? '' ),
-        'feat_2'          => sanitize_text_field( $v['feat_2'] ?? '' ),
-        'feat_3'          => sanitize_text_field( $v['feat_3'] ?? '' ),
-        'feat_4'          => sanitize_text_field( $v['feat_4'] ?? '' ),
-        'phone'           => sanitize_text_field( $v['phone'] ?? '' ),
-        'email'           => sanitize_email( $v['email'] ?? '' ),
-        'hours'           => sanitize_text_field( $v['hours'] ?? '' ),
+        'bg_image'             => esc_url_raw( $v['bg_image'] ?? '' ),
+        'overlay_color_l'      => sanitize_hex_color( $v['overlay_color_l'] ?? '#0a0a0a' ) ?: '#0a0a0a',
+        'overlay_color_r'      => sanitize_hex_color( $v['overlay_color_r'] ?? '#0f1520' ) ?: '#0f1520',
+        'overlay_opacity'      => max( 0, min( 100, intval( $v['overlay_opacity'] ?? 75 ) ) ),
+        'accent_color'         => sanitize_hex_color( $v['accent_color'] ?? '#eeae00' ) ?: '#eeae00',
+        'logo_size'            => max( 24, min( 200, intval( $v['logo_size'] ?? 80 ) ) ),
+        'badge'                => sanitize_text_field( $v['badge'] ?? '' ),
+        'title'                => sanitize_text_field( $v['title'] ?? '' ),
+        'title_accent'         => sanitize_text_field( $v['title_accent'] ?? '' ),
+        'desc'                 => sanitize_textarea_field( $v['desc'] ?? '' ),
+        'feat_1'               => sanitize_text_field( $v['feat_1'] ?? '' ),
+        'feat_2'               => sanitize_text_field( $v['feat_2'] ?? '' ),
+        'feat_3'               => sanitize_text_field( $v['feat_3'] ?? '' ),
+        'feat_4'               => sanitize_text_field( $v['feat_4'] ?? '' ),
+        'phone'                => sanitize_text_field( $v['phone'] ?? '' ),
+        'email'                => sanitize_email( $v['email'] ?? '' ),
+        'hours'                => sanitize_text_field( $v['hours'] ?? '' ),
+        'scrap_price_list_url' => esc_url_raw( $v['scrap_price_list_url'] ?? '' ),
       ] );
     }
   }
@@ -182,7 +184,10 @@ function cftg_tab_fields() { ?>
     <div class="cftg-field-group">
       <h3><span class="cftg-form-badge cftg-badge-scrap">Scrap Metal</span></h3>
       <table class="form-table cftg-form-table">
-        <?php cftg_field_row( 'cftg_cf_scrap_types', 'Scrap Types', 'TEXT', 'Materials selected' ); ?>
+        <?php
+        cftg_field_row( 'cftg_cf_scrap_types', 'Scrap Types', 'TEXT', 'Materials selected' );
+        cftg_field_row( 'cftg_cf_load_size',   'Load Size',   'TEXT', 'How much material: Bag/Trunk, Pickup load, Trailer load…' );
+        ?>
       </table>
     </div>
     <div class="cftg-field-group">
@@ -325,6 +330,35 @@ function cftg_design_form_panel( $ft, $label ) {
         </div>
       </div>
     </div>
+
+    <!-- Logo size -->
+    <div class="cftg-design-row">
+      <div class="cftg-design-label">
+        <strong>Logo Size</strong>
+        <span>Height of the logo image in pixels (24–200)</span>
+      </div>
+      <div class="cftg-design-control">
+        <input type="number" min="24" max="200" step="1"
+               name="<?php echo $n; ?>[logo_size]"
+               value="<?php echo intval( $d['logo_size'] ?? 80 ); ?>"
+               class="small-text"> px
+      </div>
+    </div>
+
+    <?php if ( $ft === 'scrap_metal' ): ?>
+    <!-- Scrap price list URL -->
+    <div class="cftg-design-row">
+      <div class="cftg-design-label">
+        <strong>Price List URL</strong>
+        <span>Link shown under the materials grid (your live metal price list)</span>
+      </div>
+      <div class="cftg-design-control">
+        <input type="url" name="<?php echo $n; ?>[scrap_price_list_url]"
+               value="<?php echo esc_attr( $d['scrap_price_list_url'] ?? '' ); ?>"
+               class="large-text" placeholder="https://cftgroup.ca/scrap-metal-prices">
+      </div>
+    </div>
+    <?php endif; ?>
 
     <hr class="cftg-divider">
 

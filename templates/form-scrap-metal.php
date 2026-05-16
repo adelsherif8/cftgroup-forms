@@ -6,12 +6,12 @@ $styles = cftg_section_styles( 'scrap_metal' );
 <div class="cftg-section" style="<?php echo $styles['section']; ?>">
   <div class="cftg-overlay" style="<?php echo $styles['overlay']; ?>"></div>
 
-  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="scrap_metal" data-total="3">
+  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="scrap_metal" data-total="4">
 
     <!-- ── Left panel ── -->
     <div class="cftg-left">
       <div class="cftg-logo">
-        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group">
+        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group" style="height:<?php echo intval( $d['logo_size'] ?? 80 ); ?>px">
       </div>
       <div class="cftg-badge"><i class="fa-solid fa-coins"></i> <?php echo esc_html( $d['badge'] ); ?></div>
       <h2 class="cftg-title"><?php echo esc_html( $d['title'] ); ?> <span class="cftg-accent"><?php echo esc_html( $d['title_accent'] ); ?></span></h2>
@@ -73,13 +73,53 @@ $styles = cftg_section_styles( 'scrap_metal' );
             </label>
             <?php endforeach; ?>
           </div>
+          <?php if ( ! empty( $d['scrap_price_list_url'] ) ): ?>
+          <p class="cftg-price-list-link">
+            <i class="fa-solid fa-circle-info"></i>
+            Not sure what your metal is worth?
+            <a href="<?php echo esc_url( $d['scrap_price_list_url'] ); ?>" target="_blank" rel="noopener">See our live price list →</a>
+          </p>
+          <?php endif; ?>
           <div class="cftg-actions">
             <button class="cftg-btn-next" type="button">Get My Offer <i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
 
-        <!-- Step 2: Postal code -->
+        <!-- Step 2: Load size -->
         <div class="cftg-step" data-step="2">
+          <h2 class="cftg-q-title">Roughly how much do you have?</h2>
+          <p class="cftg-q-sub">Just a rough estimate — we'll confirm at pickup or drop-off</p>
+          <div class="cftg-grid g2">
+            <?php
+            $loads = [
+              ['Bag / Trunk-load',      'fa-shopping-bag',   'A few items or one trunk'],
+              ['Pickup-load',           'fa-truck-pickup',   'About half to a full pickup bed'],
+              ['Trailer / Van-load',    'fa-trailer',        'Small trailer or cargo van'],
+              ['Multiple loads / Industrial', 'fa-industry','Large volume, repeated pickups'],
+              ['Not sure',              'fa-circle-question','I need help estimating'],
+            ];
+            foreach ( $loads as [$label, $icon, $sub] ):
+            ?>
+            <label class="cftg-choice">
+              <input type="radio" name="load_size" value="<?php echo esc_attr( $label ); ?>">
+              <div class="cftg-choice-body">
+                <span class="cftg-choice-icon"><i class="fa-solid <?php echo esc_attr( $icon ); ?>"></i></span>
+                <span class="cftg-choice-text">
+                  <span class="cftg-choice-name"><?php echo esc_html( $label ); ?></span>
+                  <span class="cftg-metal-tag"><?php echo esc_html( $sub ); ?></span>
+                </span>
+              </div>
+            </label>
+            <?php endforeach; ?>
+          </div>
+          <div class="cftg-actions">
+            <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Postal code -->
+        <div class="cftg-step" data-step="3">
           <h2 class="cftg-q-title">Where are you located?</h2>
           <p class="cftg-q-sub">Enter your postal code so we can serve you better</p>
           <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
@@ -89,8 +129,8 @@ $styles = cftg_section_styles( 'scrap_metal' );
           </div>
         </div>
 
-        <!-- Step 3: Contact -->
-        <div class="cftg-step" data-step="3">
+        <!-- Step 4: Contact -->
+        <div class="cftg-step" data-step="4">
           <h2 class="cftg-q-title">Almost there!</h2>
           <p class="cftg-q-sub">Enter your contact details to receive your estimate</p>
           <div class="cftg-row">
@@ -106,7 +146,7 @@ $styles = cftg_section_styles( 'scrap_metal' );
         </div>
 
         <!-- Success -->
-        <div class="cftg-step" data-step="4">
+        <div class="cftg-step" data-step="5">
           <div class="cftg-success">
             <div class="cftg-success-ring"><i class="fa-solid fa-check"></i></div>
             <h2>Offer Request Sent!</h2>

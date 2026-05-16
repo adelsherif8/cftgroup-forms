@@ -139,6 +139,7 @@ class CFTG_Form_Handler {
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
                 'cftg_cf_scrap_types' => $f['scrap_types'] ?? '',
+                'cftg_cf_load_size'   => $f['load_size']   ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );

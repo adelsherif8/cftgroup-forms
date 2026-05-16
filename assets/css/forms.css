@@ -207,9 +207,26 @@
 }
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
 
-/* Logo on left */
+/* Logo on left — height is set inline from admin design panel */
 .cftg-left .cftg-logo { margin-bottom: 8px; }
-.cftg-left .cftg-logo img { height: 64px; width: auto; object-fit: contain; }
+.cftg-left .cftg-logo img { width: auto; object-fit: contain; }
+
+/* Scrap metal price-list helper link under the materials grid */
+.cftg-price-list-link {
+  margin: 14px 0 4px;
+  font-size: 13px;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cftg-price-list-link i { color: var(--cftg-gold); }
+.cftg-price-list-link a {
+  color: var(--cftg-gold);
+  font-weight: 700;
+  text-decoration: none;
+}
+.cftg-price-list-link a:hover { text-decoration: underline; }
 
 /* ================================================================
    RIGHT PANEL — white floating card

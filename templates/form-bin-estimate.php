@@ -11,7 +11,7 @@ $styles = cftg_section_styles( 'bin_estimate' );
     <!-- ── Left panel ── -->
     <div class="cftg-left">
       <div class="cftg-logo">
-        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group">
+        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group" style="height:<?php echo intval( $d['logo_size'] ?? 80 ); ?>px">
       </div>
       <div class="cftg-badge"><i class="fa-solid fa-dumpster"></i> <?php echo esc_html( $d['badge'] ); ?></div>
       <h2 class="cftg-title"><?php echo esc_html( $d['title'] ); ?> <span class="cftg-accent"><?php echo esc_html( $d['title_accent'] ); ?></span></h2>
