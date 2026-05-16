@@ -136,10 +136,17 @@ class CFTG_Form_Handler {
     /* ── Scrap Metal ── */
     private function build_scrap_metal(): array {
         $f = $this->clean( $_POST );
+
+        /* Compose "850 lbs" from the number + unit (empty if no number) */
+        $weight_num = trim( $f['exact_weight']      ?? '' );
+        $weight_unit = trim( $f['exact_weight_unit'] ?? 'lbs' );
+        $exact_weight = $weight_num !== '' ? "{$weight_num} {$weight_unit}" : '';
+
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_scrap_types' => $f['scrap_types'] ?? '',
-                'cftg_cf_load_size'   => $f['load_size']   ?? '',
+                'cftg_cf_scrap_types'  => $f['scrap_types'] ?? '',
+                'cftg_cf_load_size'    => $f['load_size']   ?? '',
+                'cftg_cf_exact_weight' => $exact_weight,
             ] ),
             $this->utm_custom_fields( $f )
         );

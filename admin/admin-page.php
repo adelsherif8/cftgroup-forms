@@ -11,7 +11,7 @@ function cftg_handle_save_settings() {
   $text_fields = [
     'cftg_ghl_api_key', 'cftg_ghl_location_id',
     'cftg_cf_dispose_types', 'cftg_cf_delivery_date', 'cftg_cf_bin_duration', 'cftg_cf_bin_size',
-    'cftg_cf_scrap_types', 'cftg_cf_load_size',
+    'cftg_cf_scrap_types', 'cftg_cf_load_size', 'cftg_cf_exact_weight',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
@@ -185,8 +185,9 @@ function cftg_tab_fields() { ?>
       <h3><span class="cftg-form-badge cftg-badge-scrap">Scrap Metal</span></h3>
       <table class="form-table cftg-form-table">
         <?php
-        cftg_field_row( 'cftg_cf_scrap_types', 'Scrap Types', 'TEXT', 'Materials selected' );
-        cftg_field_row( 'cftg_cf_load_size',   'Load Size',   'TEXT', 'How much material: Bag/Trunk, Pickup load, Trailer load…' );
+        cftg_field_row( 'cftg_cf_scrap_types',  'Scrap Types',  'TEXT', 'Materials selected' );
+        cftg_field_row( 'cftg_cf_load_size',    'Load Size',    'TEXT', 'How much material: Bag/Trunk, Pickup load, Trailer load…' );
+        cftg_field_row( 'cftg_cf_exact_weight', 'Exact Weight', 'TEXT', 'Filled only when user picks "I know the exact weight" (e.g. "850 lbs")' );
         ?>
       </table>
     </div>

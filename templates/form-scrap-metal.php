@@ -92,11 +92,11 @@ $styles = cftg_section_styles( 'scrap_metal' );
           <div class="cftg-grid g2">
             <?php
             $loads = [
-              ['Bag / Trunk-load',      'fa-shopping-bag',   'A few items or one trunk'],
-              ['Pickup-load',           'fa-truck-pickup',   'About half to a full pickup bed'],
-              ['Trailer / Van-load',    'fa-trailer',        'Small trailer or cargo van'],
-              ['Multiple loads / Industrial', 'fa-industry','Large volume, repeated pickups'],
-              ['Not sure',              'fa-circle-question','I need help estimating'],
+              ['Bag / Trunk-load',            'fa-shopping-bag',    '~50–200 lbs'],
+              ['Pickup-load',                 'fa-truck-pickup',    '~500–1,500 lbs'],
+              ['Trailer / Van-load',          'fa-trailer',         '~2,000–5,000 lbs'],
+              ['Multiple loads / Industrial', 'fa-industry',        '5,000+ lbs'],
+              ['Not sure',                    'fa-circle-question', "I'll need help estimating"],
             ];
             foreach ( $loads as [$label, $icon, $sub] ):
             ?>
@@ -111,7 +111,31 @@ $styles = cftg_section_styles( 'scrap_metal' );
               </div>
             </label>
             <?php endforeach; ?>
+            <label class="cftg-choice cftg-full">
+              <input type="radio" name="load_size" value="I know the exact weight" data-reveal-weight>
+              <div class="cftg-choice-body">
+                <span class="cftg-choice-icon"><i class="fa-solid fa-weight-scale"></i></span>
+                <span class="cftg-choice-text">
+                  <span class="cftg-choice-name">I know the exact weight</span>
+                  <span class="cftg-metal-tag">Enter your weight below</span>
+                </span>
+              </div>
+            </label>
           </div>
+
+          <div class="cftg-conditional-weight" style="display:none;margin-top:14px">
+            <div class="cftg-field">
+              <label class="cftg-label">Exact weight</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="number" min="1" step="1" class="cftg-input" name="exact_weight" placeholder="e.g. 850" style="flex:1">
+                <select class="cftg-input" name="exact_weight_unit" style="max-width:90px">
+                  <option value="lbs" selected>lbs</option>
+                  <option value="kg">kg</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
             <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>

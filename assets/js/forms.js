@@ -142,6 +142,19 @@
           return;
         }
 
+        /* Load-size: "I know the exact weight" reveals input, no auto-advance */
+        if ( el.type === 'radio' && el.name === 'load_size' ) {
+          const step = el.closest( '.cftg-step' );
+          const cf   = step?.querySelector( '.cftg-conditional-weight' );
+          if ( el.hasAttribute( 'data-reveal-weight' ) ) {
+            if ( cf ) cf.style.display = 'block';
+            return; // stay on step so user can type the weight
+          }
+          if ( cf ) cf.style.display = 'none';
+          setTimeout( () => this.next(), 320 );
+          return;
+        }
+
         /* Auto-advance all other radio buttons */
         if ( el.type === 'radio' ) {
           setTimeout( () => this.next(), 320 );
