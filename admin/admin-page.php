@@ -20,14 +20,14 @@ function cftg_handle_save_settings() {
     'cftg_cf_gclid',
   ];
   foreach ( $text_fields as $key ) {
-    if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( $_POST[ $key ] ) );
+    if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
   }
 
   /* Form design settings */
   foreach ( [ 'vehicle_quote', 'scrap_metal', 'bin_estimate' ] as $ft ) {
     $key = "cftg_design_{$ft}";
     if ( isset( $_POST[ $key ] ) && is_array( $_POST[ $key ] ) ) {
-      $v = $_POST[ $key ];
+      $v = wp_unslash( $_POST[ $key ] );
       update_option( $key, [
         'bg_image'        => esc_url_raw( $v['bg_image'] ?? '' ),
         'overlay_color_l' => sanitize_hex_color( $v['overlay_color_l'] ?? '#0a0a0a' ) ?: '#0a0a0a',

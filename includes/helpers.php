@@ -89,7 +89,13 @@ function cftg_design_defaults( $form_type ) {
 /* ── Get merged design (saved + defaults) ── */
 function cftg_get_design( $form_type ) {
   $saved = get_option( "cftg_design_{$form_type}", [] );
-  return wp_parse_args( $saved, cftg_design_defaults( $form_type ) );
+  $merged = wp_parse_args( $saved, cftg_design_defaults( $form_type ) );
+  /* Strip lingering slashes from values saved before the wp_unslash fix
+     (e.g. "we\'ll" → "we'll"). */
+  foreach ( $merged as $k => $v ) {
+    if ( is_string( $v ) ) $merged[ $k ] = stripslashes( $v );
+  }
+  return $merged;
 }
 
 /* ── Build inline style strings for a section ── */

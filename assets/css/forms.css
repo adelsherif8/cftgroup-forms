@@ -208,8 +208,8 @@
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
 
 /* Logo on left */
-.cftg-left .cftg-logo { margin-bottom: 4px; }
-.cftg-left .cftg-logo img { height: 44px; width: auto; object-fit: contain; }
+.cftg-left .cftg-logo { margin-bottom: 8px; }
+.cftg-left .cftg-logo img { height: 64px; width: auto; object-fit: contain; }
 
 /* ================================================================
    RIGHT PANEL — white floating card
