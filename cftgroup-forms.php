@@ -33,6 +33,14 @@ require_once CFTG_DIR . 'admin/instructions-page.php';
 register_activation_hook( __FILE__, [ 'CFTG_Entries', 'maybe_create_table' ] );
 add_action( 'plugins_loaded', [ 'CFTG_Entries', 'maybe_create_table' ] );
 
+/* ── Clear leftover rate-limit transients (removed in 1.7.5) ── */
+add_action( 'plugins_loaded', function() {
+    if ( get_option( 'cftg_rl_cleared_175' ) ) return;
+    global $wpdb;
+    $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_cftg_rl_%' OR option_name LIKE '_transient_timeout_cftg_rl_%'" );
+    update_option( 'cftg_rl_cleared_175', 1 );
+} );
+
 /* ── Auto-updater (checks GitHub releases) ────────────────── */
 new CFTG_Updater( CFTG_GITHUB_REPO, __FILE__, CFTG_VERSION );
 
