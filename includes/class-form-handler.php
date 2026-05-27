@@ -182,6 +182,7 @@ class CFTG_Form_Handler {
                 'cftg_cf_scrap_types'  => $f['scrap_types'] ?? '',
                 'cftg_cf_load_size'    => $f['load_size']   ?? '',
                 'cftg_cf_exact_weight' => $exact_weight,
+                'cftg_cf_scrap_postal' => $f['postal']      ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );
