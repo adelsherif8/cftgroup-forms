@@ -17,8 +17,11 @@ class CFTG_Form_Handler {
         }
     }
 
-    /* ── Spam checks: honeypot + timing + rate limit ── */
+    /* ── Spam checks: honeypot + timing + rate limit ──
+       Logged-in admins bypass these so they can test freely. */
     private function spam_check(): void {
+        if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) return;
+
         /* 1. Honeypot — bots fill this, humans don't */
         if ( ! empty( $_POST['website'] ) ) {
             wp_send_json_error( [ 'message' => 'Spam detected.' ], 403 );
@@ -30,11 +33,11 @@ class CFTG_Form_Handler {
             wp_send_json_error( [ 'message' => 'Please slow down.' ], 429 );
         }
 
-        /* 3. Rate limit — max 5 submissions per IP per hour */
+        /* 3. Rate limit — max 20 submissions per IP per hour */
         $ip  = $this->get_ip();
         $key = 'cftg_rl_' . md5( $ip );
         $count = (int) get_transient( $key );
-        if ( $count >= 5 ) {
+        if ( $count >= 20 ) {
             wp_send_json_error( [ 'message' => 'Too many submissions. Please try again later.' ], 429 );
         }
         set_transient( $key, $count + 1, HOUR_IN_SECONDS );
