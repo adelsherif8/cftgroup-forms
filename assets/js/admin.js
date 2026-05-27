@@ -37,20 +37,12 @@
   /* Map GHL field key/name → plugin option name, so we can autofill UUIDs */
   const KEY_MAP = {
     /* Bin Estimate */
-    'contact.dispose_types':                            'cftg_cf_dispose_types',
     'contact.what_do_you_need_to_dispose':              'cftg_cf_dispose_types',
-    'contact.delivery_date':                            'cftg_cf_delivery_date',
     'contact.when_do_you_need_your_bin':                'cftg_cf_delivery_date',
-    'contact.bin_duration':                             'cftg_cf_bin_duration',
     'contact.how_long_do_you_need_the_bin_for':         'cftg_cf_bin_duration',
-    'contact.how_long_will_you_need_the_bin':           'cftg_cf_bin_duration',
-    'contact.bin_size':                                 'cftg_cf_bin_size',
-    'contact.what_size_of_bin':                         'cftg_cf_bin_size',
     'contact.what_size_do_you_need':                    'cftg_cf_bin_size',
-    'contact.bin_delivery_postal':                      'cftg_cf_bin_delivery_postal',
     'contact.where_would_you_like_the_bin_delivered':   'cftg_cf_bin_delivery_postal',
     /* Scrap Metal */
-    'contact.scrap_types':                              'cftg_cf_scrap_types',
     'contact.what_do_you_need_to_scrap':                'cftg_cf_scrap_types',
     'contact.load_size':                                'cftg_cf_load_size',
     'contact.exact_weight':                             'cftg_cf_exact_weight',
@@ -59,13 +51,9 @@
     'contact.vehicle_year':                             'cftg_cf_vehicle_year',
     'contact.vehicle_make':                             'cftg_cf_vehicle_make',
     'contact.vehicle_model':                            'cftg_cf_vehicle_model',
-    'contact.engine_running':                           'cftg_cf_engine_running',
     'contact.is_the_engine_running':                    'cftg_cf_engine_running',
-    'contact.parts_missing':                            'cftg_cf_parts_missing',
     'contact.are_parts_missing':                        'cftg_cf_parts_missing',
-    'contact.missing_parts_notes':                      'cftg_cf_missing_parts_notes',
     'contact.whats_missing':                            'cftg_cf_missing_parts_notes',
-    'contact.vehicle_pickup_postal':                    'cftg_cf_vehicle_pickup_postal',
     'contact.what_is_the_postal_code_of_the_pickup_location': 'cftg_cf_vehicle_pickup_postal',
     /* UTM custom */
     'contact.utmmedium_custom':                         'cftg_cf_utm_medium',
