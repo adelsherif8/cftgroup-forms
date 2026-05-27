@@ -34,6 +34,65 @@
   }
 
   /* ── Fetch GHL custom fields ── */
+  /* Map GHL field key/name → plugin option name, so we can autofill UUIDs */
+  const KEY_MAP = {
+    /* Bin Estimate */
+    'contact.dispose_types':         'cftg_cf_dispose_types',
+    'contact.delivery_date':         'cftg_cf_delivery_date',
+    'contact.bin_duration':          'cftg_cf_bin_duration',
+    'contact.bin_size':              'cftg_cf_bin_size',
+    'contact.bin_delivery_postal':   'cftg_cf_bin_delivery_postal',
+    /* Scrap Metal */
+    'contact.scrap_types':           'cftg_cf_scrap_types',
+    'contact.load_size':             'cftg_cf_load_size',
+    'contact.exact_weight':          'cftg_cf_exact_weight',
+    'contact.scrap_postal':          'cftg_cf_scrap_postal',
+    /* Vehicle Quote */
+    'contact.vehicle_year':          'cftg_cf_vehicle_year',
+    'contact.vehicle_make':          'cftg_cf_vehicle_make',
+    'contact.vehicle_model':         'cftg_cf_vehicle_model',
+    'contact.engine_running':        'cftg_cf_engine_running',
+    'contact.parts_missing':         'cftg_cf_parts_missing',
+    'contact.missing_parts_notes':   'cftg_cf_missing_parts_notes',
+    'contact.vehicle_pickup_postal': 'cftg_cf_vehicle_pickup_postal',
+    /* UTM custom */
+    'contact.utmmedium_custom':      'cftg_cf_utm_medium',
+    'contact.utmcampaign_custom':    'cftg_cf_utm_campaign',
+    'contact.utmcontent_custom':     'cftg_cf_utm_content',
+    'contact.utm_keyword':           'cftg_cf_utm_keyword',
+    'contact.utm_content':           'cftg_cf_utm_content_std',
+    'contact.utm_campaign':          'cftg_cf_utm_campaign_std',
+  };
+  /* Fallback by normalised field name (lowercase, alphanumerics) */
+  const NAME_MAP = {
+    'gclid':                'cftg_cf_gclid',
+    'dispose types':        'cftg_cf_dispose_types',
+    'delivery date':        'cftg_cf_delivery_date',
+    'rental duration':      'cftg_cf_bin_duration',
+    'bin size':             'cftg_cf_bin_size',
+    'scrap types':          'cftg_cf_scrap_types',
+    'load size':            'cftg_cf_load_size',
+    'exact weight':         'cftg_cf_exact_weight',
+    'scrap metal postal':   'cftg_cf_scrap_postal',
+    'vehicle year':         'cftg_cf_vehicle_year',
+    'vehicle make':         'cftg_cf_vehicle_make',
+    'vehicle model':        'cftg_cf_vehicle_model',
+    'engine running':       'cftg_cf_engine_running',
+    'parts missing':        'cftg_cf_parts_missing',
+    'utmmedium_custom':     'cftg_cf_utm_medium',
+    'utmcampaign_custom':   'cftg_cf_utm_campaign',
+    'utmcontent_custom':    'cftg_cf_utm_content',
+    'utm keyword':          'cftg_cf_utm_keyword',
+    'utm content':          'cftg_cf_utm_content_std',
+    'utm campaign':         'cftg_cf_utm_campaign_std',
+  };
+
+  function matchOption( field ) {
+    const key  = ( field.key  || '' ).toLowerCase().trim();
+    const name = ( field.name || '' ).toLowerCase().trim().replace( /[?]/g, '' );
+    return KEY_MAP[ key ] || NAME_MAP[ name ] || null;
+  }
+
   function initFetchFields() {
     const btn = document.getElementById( 'cftg-fetch-fields-btn' );
     if ( ! btn ) return;
@@ -52,13 +111,40 @@
         .then( r => r.json() )
         .then( res => {
           if ( res.success && res.data.fields.length ) {
-            let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px">';
-            html += '<tr style="background:#f0f0f0"><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Field Name</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Key</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">UUID</th></tr>';
+            /* Auto-fill matching UUID inputs */
+            let filled = 0;
+            const filledFields = [];
             res.data.fields.forEach( f => {
+              const opt = matchOption( f );
+              if ( ! opt ) return;
+              const input = document.getElementById( opt );
+              if ( input ) {
+                input.value = f.id;
+                input.style.background = '#dcfce7';
+                filled++;
+                filledFields.push( f.name );
+              }
+            } );
+
+            let html = '';
+            if ( filled > 0 ) {
+              html += `<div style="background:#dcfce7;border:1px solid #16a34a;color:#166534;padding:10px 14px;border-radius:6px;margin-bottom:10px;font-weight:600">
+                ✓ Auto-filled ${ filled } field${ filled !== 1 ? 's' : '' }: ${ filledFields.join( ', ' ) }
+                <div style="font-weight:400;margin-top:4px;font-size:12px">Click <strong>Save Settings</strong> below to save these mappings.</div>
+              </div>`;
+            }
+
+            html += '<div style="font-size:12px;color:#666;margin-bottom:6px">All contact custom fields found in your GHL location:</div>';
+            html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+            html += '<tr style="background:#f0f0f0"><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Field Name</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Key</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">UUID</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Status</th></tr>';
+            res.data.fields.forEach( f => {
+              const opt = matchOption( f );
+              const matched = opt ? '<span style="color:#16a34a;font-weight:600">✓ matched</span>' : '<span style="color:#999">—</span>';
               html += `<tr>
                 <td style="padding:5px 8px;border:1px solid #ddd">${ f.name }</td>
                 <td style="padding:5px 8px;border:1px solid #ddd"><code style="background:#fff8e1;padding:2px 4px">${ f.key }</code></td>
                 <td style="padding:5px 8px;border:1px solid #ddd"><code style="font-size:10px">${ f.id }</code></td>
+                <td style="padding:5px 8px;border:1px solid #ddd">${ matched }</td>
               </tr>`;
             } );
             html += '</table>';

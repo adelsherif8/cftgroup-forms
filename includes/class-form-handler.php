@@ -235,13 +235,13 @@ class CFTG_Form_Handler {
         $location_id = get_option( 'cftg_ghl_location_id', '' );
 
         $response = wp_remote_get(
-            'https://services.leadconnectorhq.com/locations/' . rawurlencode( $location_id ) . '/customFields',
+            'https://services.leadconnectorhq.com/locations/' . rawurlencode( $location_id ) . '/customFields?model=contact',
             [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $api_key,
                     'Version'       => '2021-07-28',
                 ],
-                'timeout' => 15,
+                'timeout' => 20,
             ]
         );
 
