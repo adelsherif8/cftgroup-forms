@@ -75,26 +75,24 @@ class CFTG_GHL_API {
         return [ 'success' => false, 'message' => "GHL error ({$code}): {$err}" ];
     }
 
-    /* ── Build custom fields array from option IDs or field keys ──
-       The admin row accepts either a UUID or a field key like
-       "contact.load_size" / "{{contact.load_size}}". We detect which
-       and send GHL the matching property (`id` for UUID, `key` for key). */
+    /* ── Build custom fields array from option IDs ──
+       GHL v2 contact upsert only accepts { id, value } pairs.
+       If the user pasted a key (contains a dot) instead of a UUID we
+       silently skip that field rather than send a malformed entry —
+       sending a key causes GHL to 400 the entire request. */
     public static function build_custom_fields( array $map ): array {
         $fields = [];
         foreach ( $map as $option_key => $value ) {
             $stored = trim( get_option( $option_key, '' ) );
             if ( $stored === '' || $value === '' || $value === null ) continue;
 
-            $entry = [ 'value' => sanitize_text_field( (string) $value ) ];
+            /* Skip key-format entries — GHL only accepts UUIDs */
+            if ( strpos( $stored, '.' ) !== false || strpos( $stored, '{{' ) !== false ) continue;
 
-            /* If it contains a dot or merge-tag braces, treat as field key */
-            if ( strpos( $stored, '.' ) !== false || strpos( $stored, '{{' ) !== false ) {
-                $key = trim( str_replace( [ '{{', '}}' ], '', $stored ) );
-                $entry['key'] = sanitize_text_field( $key );
-            } else {
-                $entry['id']  = sanitize_text_field( $stored );
-            }
-            $fields[] = $entry;
+            $fields[] = [
+                'id'    => sanitize_text_field( $stored ),
+                'value' => sanitize_text_field( (string) $value ),
+            ];
         }
         return $fields;
     }
