@@ -41,6 +41,13 @@ function cftg_delete_entry(): void {
     exit;
 }
 
+/* ── Pretty-print a JSON string for debugging ── */
+function cftg_pretty_json( string $raw ): string {
+    $decoded = json_decode( $raw, true );
+    if ( $decoded === null ) return $raw;
+    return json_encode( $decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+}
+
 /* ── Form labels + colours ── */
 function cftg_form_meta(): array {
     return [
@@ -460,6 +467,24 @@ function cftg_render_entry_detail( array $entry ): void {
                     <div class="item"><span class="label">Submitted</span><span class="value"><?php echo esc_html( mysql2date( 'M j, Y \a\t g:i:s a', $entry['created_at'] ) ); ?></span></div>
                 </div>
             </div>
+
+            <!-- GHL debug: request + response -->
+            <?php if ( ! empty( $data['_ghl_request'] ) || ! empty( $data['_ghl_response'] ) ): ?>
+            <div class="cftg-detail-section">
+                <h3>GHL Debug</h3>
+                <?php if ( ! empty( $data['_ghl_http'] ) ): ?>
+                    <div style="margin-bottom:10px;font-size:13px"><strong>HTTP:</strong> <code><?php echo intval( $data['_ghl_http'] ); ?></code></div>
+                <?php endif; ?>
+                <?php if ( ! empty( $data['_ghl_request'] ) ): ?>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-bottom:6px">Request sent to GHL</div>
+                    <pre style="background:#0b1020;color:#a7f3d0;padding:14px;border-radius:8px;font-size:12px;overflow:auto;max-height:300px;margin:0 0 14px"><?php echo esc_html( cftg_pretty_json( $data['_ghl_request'] ) ); ?></pre>
+                <?php endif; ?>
+                <?php if ( ! empty( $data['_ghl_response'] ) ): ?>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-bottom:6px">Response from GHL</div>
+                    <pre style="background:#0b1020;color:#fbbf24;padding:14px;border-radius:8px;font-size:12px;overflow:auto;max-height:300px;margin:0"><?php echo esc_html( cftg_pretty_json( $data['_ghl_response'] ) ); ?></pre>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
 
             <!-- GHL status -->
             <div class="cftg-detail-section">

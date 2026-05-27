@@ -86,7 +86,8 @@ class CFTG_Form_Handler {
         }
 
         /* Save entry locally before calling GHL so we never lose a lead */
-        $entry_id = CFTG_Entries::insert( [
+        $form_data = $this->entry_data_from_post( $type );
+        $entry_id  = CFTG_Entries::insert( [
             'form_type'  => $type,
             'first_name' => $payload['firstName']  ?? '',
             'last_name'  => $payload['lastName']   ?? '',
@@ -94,12 +95,26 @@ class CFTG_Form_Handler {
             'phone'      => $payload['phone']      ?? '',
             'postal'     => $payload['postalCode'] ?? '',
             'tag'        => $payload['tags'][0]    ?? '',
-            'data'       => $this->entry_data_from_post( $type ),
+            'data'       => $form_data,
             'ip'         => $this->get_ip(),
         ] );
 
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
+
+        /* Store the full GHL request + response in the entry's data so we
+           can see exactly what was sent and what GHL replied with. */
+        $form_data['_ghl_request']  = $result['request']  ?? '';
+        $form_data['_ghl_response'] = $result['response'] ?? '';
+        $form_data['_ghl_http']     = $result['http']     ?? 0;
+        global $wpdb;
+        $wpdb->update(
+            CFTG_Entries::table_name(),
+            [ 'data' => wp_json_encode( $form_data ) ],
+            [ 'id' => $entry_id ],
+            [ '%s' ],
+            [ '%d' ]
+        );
 
         CFTG_Entries::update_ghl_status(
             $entry_id,

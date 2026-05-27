@@ -46,6 +46,7 @@ class CFTG_GHL_API {
     /* ── Upsert a contact (create or update by email) ── */
     public function upsert_contact( array $payload ): array {
         $payload['locationId'] = $this->location_id;
+        $raw_body              = wp_json_encode( $payload );
 
         $response = wp_remote_post(
             $this->base . 'contacts/upsert',
@@ -55,24 +56,44 @@ class CFTG_GHL_API {
                     'Content-Type'  => 'application/json',
                     'Version'       => $this->version,
                 ],
-                'body'    => wp_json_encode( $payload ),
+                'body'    => $raw_body,
                 'timeout' => 20,
             ]
         );
 
         if ( is_wp_error( $response ) ) {
-            return [ 'success' => false, 'message' => $response->get_error_message() ];
+            return [
+                'success'  => false,
+                'message'  => $response->get_error_message(),
+                'request'  => $raw_body,
+                'response' => '',
+                'http'     => 0,
+            ];
         }
 
-        $code = wp_remote_retrieve_response_code( $response );
-        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        $code     = wp_remote_retrieve_response_code( $response );
+        $raw_resp = wp_remote_retrieve_body( $response );
+        $body     = json_decode( $raw_resp, true );
+
+        $base_return = [
+            'request'  => $raw_body,
+            'response' => $raw_resp,
+            'http'     => $code,
+        ];
 
         if ( in_array( $code, [ 200, 201 ], true ) ) {
-            return [ 'success' => true, 'contact_id' => $body['contact']['id'] ?? '' ];
+            return array_merge( $base_return, [
+                'success'    => true,
+                'contact_id' => $body['contact']['id'] ?? '',
+                'message'    => 'OK',
+            ] );
         }
 
         $err = $body['message'] ?? $body['msg'] ?? 'Unknown GHL error.';
-        return [ 'success' => false, 'message' => "GHL error ({$code}): {$err}" ];
+        return array_merge( $base_return, [
+            'success' => false,
+            'message' => "GHL error ({$code}): {$err}",
+        ] );
     }
 
     /* ── Build custom fields array from option IDs ──
