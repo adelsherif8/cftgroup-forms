@@ -149,7 +149,12 @@
               </div>`;
             }
 
-            html += '<div style="font-size:12px;color:#666;margin-bottom:6px">All contact custom fields found in your GHL location:</div>';
+            if ( res.data.debug && res.data.debug.length ) {
+              html += '<div style="background:#fef3c7;border:1px solid #fbbf24;color:#78350f;padding:8px 12px;border-radius:6px;margin-bottom:10px;font-size:11px;font-family:monospace">';
+              html += '<strong>GHL API responses:</strong><br>' + res.data.debug.join( '<br>' );
+              html += '</div>';
+            }
+            html += '<div style="font-size:12px;color:#666;margin-bottom:6px">All custom fields returned by GHL (' + res.data.fields.length + ' total):</div>';
             html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
             html += '<tr style="background:#f0f0f0"><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Field Name</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Key</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">UUID</th><th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Status</th></tr>';
             res.data.fields.forEach( f => {

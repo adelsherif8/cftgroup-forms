@@ -234,27 +234,38 @@ class CFTG_Form_Handler {
         $api_key     = get_option( 'cftg_ghl_api_key', '' );
         $location_id = get_option( 'cftg_ghl_location_id', '' );
 
-        $response = wp_remote_get(
-            'https://services.leadconnectorhq.com/locations/' . rawurlencode( $location_id ) . '/customFields?model=contact',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Version'       => '2021-07-28',
-                ],
-                'timeout' => 20,
-            ]
-        );
+        /* Hit BOTH the contact-filtered endpoint AND the unfiltered one,
+           then merge results deduped by id. Some GHL accounts have new
+           fields that the model filter drops. */
+        $headers = [
+            'Authorization' => 'Bearer ' . $api_key,
+            'Version'       => '2021-07-28',
+        ];
+        $base    = 'https://services.leadconnectorhq.com/locations/' . rawurlencode( $location_id ) . '/customFields';
 
-        if ( is_wp_error( $response ) ) {
-            wp_send_json_error( [ 'message' => $response->get_error_message() ] );
+        $merged = [];
+        $debug  = [];
+        foreach ( [ '?model=contact', '' ] as $qs ) {
+            $resp = wp_remote_get( $base . $qs, [ 'headers' => $headers, 'timeout' => 20 ] );
+            if ( is_wp_error( $resp ) ) continue;
+            $code = wp_remote_retrieve_response_code( $resp );
+            $body = json_decode( wp_remote_retrieve_body( $resp ), true );
+            $fields = $body['customFields'] ?? [];
+            $debug[] = ( $qs ?: '(no filter)' ) . ' → ' . count( $fields ) . ' fields, HTTP ' . $code;
+            if ( $code === 200 ) {
+                foreach ( $fields as $f ) {
+                    $id = $f['id'] ?? '';
+                    if ( $id && ! isset( $merged[ $id ] ) ) $merged[ $id ] = $f;
+                }
+            }
         }
 
-        $code = wp_remote_retrieve_response_code( $response );
-        $body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-        if ( $code !== 200 ) {
-            wp_send_json_error( [ 'message' => $body['message'] ?? "HTTP $code" ] );
+        if ( empty( $merged ) ) {
+            wp_send_json_error( [ 'message' => 'GHL returned no fields. ' . implode( ' | ', $debug ) ] );
         }
+
+        $code = 200;
+        $body = [ 'customFields' => array_values( $merged ) ];
 
         $fields = array_map( fn( $f ) => [
             'name' => $f['name']     ?? '',
@@ -262,7 +273,7 @@ class CFTG_Form_Handler {
             'id'   => $f['id']       ?? '',
         ], $body['customFields'] ?? [] );
 
-        wp_send_json_success( [ 'fields' => $fields ] );
+        wp_send_json_success( [ 'fields' => $fields, 'debug' => $debug ] );
     }
 
     /* ── Sanitize POST fields ── */
