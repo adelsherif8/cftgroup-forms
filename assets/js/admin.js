@@ -66,7 +66,6 @@
     'contact.are_parts_missing':                        'cftg_cf_parts_missing',
     'contact.missing_parts_notes':                      'cftg_cf_missing_parts_notes',
     'contact.whats_missing':                            'cftg_cf_missing_parts_notes',
-    'contact.are_there_any_parts_missing_if_yes_which_ones': 'cftg_cf_missing_parts_notes',
     'contact.vehicle_pickup_postal':                    'cftg_cf_vehicle_pickup_postal',
     'contact.what_is_the_postal_code_of_the_pickup_location': 'cftg_cf_vehicle_pickup_postal',
     /* UTM custom */
@@ -128,19 +127,34 @@
         .then( r => r.json() )
         .then( res => {
           if ( res.success && res.data.fields.length ) {
-            /* Auto-fill matching UUID inputs */
+            /* Auto-fill matching UUID inputs. Process exact KEY_MAP matches
+               first, then NAME_MAP fallbacks, so primary keys win over loose
+               name matches and we never overwrite a slot already filled by
+               an exact key. */
             let filled = 0;
             const filledFields = [];
-            res.data.fields.forEach( f => {
-              const opt = matchOption( f );
-              if ( ! opt ) return;
+            const filledSlots  = new Set();
+
+            const fill = ( f, opt ) => {
+              if ( ! opt || filledSlots.has( opt ) ) return;
               const input = document.getElementById( opt );
-              if ( input ) {
-                input.value = f.id;
-                input.style.background = '#dcfce7';
-                filled++;
-                filledFields.push( f.name );
-              }
+              if ( ! input ) return;
+              input.value = f.id;
+              input.style.background = '#dcfce7';
+              filledSlots.add( opt );
+              filled++;
+              filledFields.push( f.name );
+            };
+
+            /* Pass 1: exact key matches (KEY_MAP) */
+            res.data.fields.forEach( f => {
+              const key = ( f.key || '' ).toLowerCase().trim();
+              fill( f, KEY_MAP[ key ] );
+            } );
+            /* Pass 2: name fallbacks (NAME_MAP) */
+            res.data.fields.forEach( f => {
+              const name = ( f.name || '' ).toLowerCase().trim().replace( /[?]/g, '' );
+              fill( f, NAME_MAP[ name ] );
             } );
 
             let html = '';
