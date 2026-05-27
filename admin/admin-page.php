@@ -18,7 +18,7 @@ function cftg_handle_save_settings() {
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
     'cftg_cf_utm_medium', 'cftg_cf_utm_campaign', 'cftg_cf_utm_content',
     'cftg_cf_utm_keyword', 'cftg_cf_utm_content_std', 'cftg_cf_utm_campaign_std',
-    'cftg_cf_gclid',
+    'cftg_cf_gclid', 'cftg_cf_source_cft',
   ];
   foreach ( $text_fields as $key ) {
     if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
@@ -221,6 +221,7 @@ function cftg_tab_fields() { ?>
         cftg_field_row( 'cftg_cf_utm_content_std',    'utm Content',        'TEXT', 'utm_content (GHL built-in field)' );
         cftg_field_row( 'cftg_cf_utm_campaign_std',   'utm Campaign',       'TEXT', 'utm_campaign (GHL built-in field)' );
         cftg_field_row( 'cftg_cf_gclid',              'GCLID',              'TEXT', 'Google Click ID from URL' );
+        cftg_field_row( 'cftg_cf_source_cft',         'Source CFT',         'TEXT', 'Form name: "Vehicle Estimate Form", "Metal Estimate Form" or "Bin Estimate Form"' );
         ?>
       </table>
     </div>

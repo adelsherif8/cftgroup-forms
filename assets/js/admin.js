@@ -83,6 +83,8 @@
     'contact.utm_content':                              'cftg_cf_utm_content_std',
     'contact.utm_campaign':                             'cftg_cf_utm_campaign_std',
     'contact.attributionsourcegclid':                   'cftg_cf_gclid',
+    /* Source CFT */
+    'contact.source_cft':                               'cftg_cf_source_cft',
   };
   /* Fallback by normalised field name (lowercase, alphanumerics) */
   const NAME_MAP = {

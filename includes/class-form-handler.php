@@ -162,6 +162,7 @@ class CFTG_Form_Handler {
                 'cftg_cf_bin_duration'        => $f['bin_duration']  ?? '',
                 'cftg_cf_bin_size'            => $f['bin_size']      ?? '',
                 'cftg_cf_bin_delivery_postal' => $f['postal']        ?? '',
+                'cftg_cf_source_cft'          => 'Bin Estimate Form',
             ] ),
             $this->utm_custom_fields( $f )
         );
@@ -195,6 +196,7 @@ class CFTG_Form_Handler {
                 /* Workflows use the same "pick-up postal" field for both
                    vehicle and scrap, so also write postal there. */
                 'cftg_cf_vehicle_pickup_postal' => $f['postal']      ?? '',
+                'cftg_cf_source_cft'            => 'Metal Estimate Form',
             ] ),
             $this->utm_custom_fields( $f )
         );
@@ -234,6 +236,7 @@ class CFTG_Form_Handler {
                 'cftg_cf_parts_missing'         => $f['parts_missing']       ?? '',
                 'cftg_cf_missing_parts_notes'   => $f['whats_missing']       ?? '',
                 'cftg_cf_vehicle_pickup_postal' => $f['postal']              ?? '',
+                'cftg_cf_source_cft'            => 'Vehicle Estimate Form',
             ] ),
             $this->utm_custom_fields( $f )
         );
