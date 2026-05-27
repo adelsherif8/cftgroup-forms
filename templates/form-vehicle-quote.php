@@ -6,7 +6,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
 <div class="cftg-section" style="<?php echo $styles['section']; ?>">
   <div class="cftg-overlay" style="<?php echo $styles['overlay']; ?>"></div>
 
-  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="vehicle_quote" data-total="6">
+  <div class="cftg-wrap" id="<?php echo esc_attr( $uid ); ?>" data-form-type="vehicle_quote" data-total="5">
 
     <!-- ── Left panel ── -->
     <div class="cftg-left">
@@ -42,18 +42,17 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         <div class="cftg-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
         <input type="hidden" name="loaded_at" class="cftg-loaded-at">
 
-        <!-- Step 1: Vehicle details + mileage -->
+        <!-- Step 1: Vehicle details -->
         <div class="cftg-step active" data-step="1">
           <div class="cftg-vehicle-banner">
             <div class="cftg-vehicle-banner-icon"><i class="fa-solid fa-car"></i></div>
-            <div><strong>Tell us about your vehicle</strong><span>Year, make, model and mileage</span></div>
+            <div><strong>Tell us about your vehicle</strong><span>Year, make and model — takes 60 seconds</span></div>
           </div>
           <div class="cftg-vehicle-grid">
             <div class="cftg-field"><label class="cftg-label">Vehicle Year</label><input type="text" class="cftg-input" name="vehicle_year" placeholder="2018"></div>
             <div class="cftg-field"><label class="cftg-label">Vehicle Make</label><input type="text" class="cftg-input" name="vehicle_make" placeholder="Honda"></div>
             <div class="cftg-field"><label class="cftg-label">Vehicle Model</label><input type="text" class="cftg-input" name="vehicle_model" placeholder="Civic"></div>
           </div>
-          <div class="cftg-field" style="margin-top:14px"><label class="cftg-label">Mileage (km)</label><input type="text" class="cftg-input" name="mileage" placeholder="e.g. 145,000"></div>
           <div class="cftg-actions">
             <button class="cftg-btn-next" type="button">Get My Estimate <i class="fa-solid fa-arrow-right"></i></button>
           </div>
@@ -77,26 +76,8 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           </div>
         </div>
 
-        <!-- Step 3: Catalytic converter? -->
+        <!-- Step 3: Parts missing? -->
         <div class="cftg-step" data-step="3">
-          <h2 class="cftg-q-title">Does it have the catalytic converter?</h2>
-          <p class="cftg-q-sub">This affects the valuation of your vehicle</p>
-          <div class="cftg-yn-grid">
-            <label class="cftg-yn yes-card"><input type="radio" name="catalytic_converter" value="Yes">
-              <div class="cftg-yn-body"><div class="cftg-yn-icon"><i class="fa-solid fa-circle-check"></i></div><span class="cftg-yn-label">Yes</span></div>
-            </label>
-            <label class="cftg-yn no-card"><input type="radio" name="catalytic_converter" value="No">
-              <div class="cftg-yn-body"><div class="cftg-yn-icon"><i class="fa-solid fa-circle-xmark"></i></div><span class="cftg-yn-label">No</span></div>
-            </label>
-          </div>
-          <div class="cftg-actions">
-            <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
-          </div>
-        </div>
-
-        <!-- Step 4: Parts missing? -->
-        <div class="cftg-step" data-step="4">
           <h2 class="cftg-q-title">Are parts missing?</h2>
           <p class="cftg-q-sub">This helps us give you the most accurate quote</p>
           <div class="cftg-yn-grid">
@@ -119,8 +100,8 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           </div>
         </div>
 
-        <!-- Step 5: Postal code -->
-        <div class="cftg-step" data-step="5">
+        <!-- Step 4: Postal code -->
+        <div class="cftg-step" data-step="4">
           <h2 class="cftg-q-title">What is the postal code of the pick-up location?</h2>
           <p class="cftg-q-sub">Enter your postal code so we can arrange pick-up</p>
           <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
@@ -130,8 +111,8 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           </div>
         </div>
 
-        <!-- Step 6: Contact -->
-        <div class="cftg-step" data-step="6">
+        <!-- Step 5: Contact -->
+        <div class="cftg-step" data-step="5">
           <h2 class="cftg-q-title">Almost there!</h2>
           <p class="cftg-q-sub">Enter your contact details to receive your quote</p>
           <div class="cftg-row">
@@ -147,7 +128,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         </div>
 
         <!-- Success -->
-        <div class="cftg-step" data-step="7">
+        <div class="cftg-step" data-step="6">
           <div class="cftg-success">
             <div class="cftg-success-ring"><i class="fa-solid fa-check"></i></div>
             <h2>Quote Request Sent!</h2>
