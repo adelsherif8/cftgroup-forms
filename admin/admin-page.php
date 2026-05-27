@@ -13,6 +13,7 @@ function cftg_handle_save_settings() {
     'cftg_cf_dispose_types', 'cftg_cf_delivery_date', 'cftg_cf_bin_duration', 'cftg_cf_bin_size',
     'cftg_cf_scrap_types', 'cftg_cf_load_size', 'cftg_cf_exact_weight', 'cftg_cf_scrap_postal',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
+    'cftg_cf_make_model_year', 'cftg_cf_mileage', 'cftg_cf_catalytic_converter',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
     'cftg_cf_utm_medium', 'cftg_cf_utm_campaign', 'cftg_cf_utm_content',
@@ -199,7 +200,10 @@ function cftg_tab_fields() { ?>
         cftg_field_row( 'cftg_cf_vehicle_year',          'Vehicle Year',                                    'TEXT', 'e.g. 2018' );
         cftg_field_row( 'cftg_cf_vehicle_make',          'Vehicle Make',                                    'TEXT', 'e.g. Honda' );
         cftg_field_row( 'cftg_cf_vehicle_model',         'Vehicle Model',                                   'TEXT', 'e.g. Civic' );
+        cftg_field_row( 'cftg_cf_make_model_year',       'Make, Model, Year (combined)',                    'TEXT', 'Combined string like "2018 Honda Civic"' );
+        cftg_field_row( 'cftg_cf_mileage',               'Mileage',                                         'TEXT', 'Vehicle mileage from form' );
         cftg_field_row( 'cftg_cf_engine_running',        'Engine Running',                                  'TEXT', 'Yes or No' );
+        cftg_field_row( 'cftg_cf_catalytic_converter',   'Catalytic Converter',                             'TEXT', 'Yes or No — does it have the catalytic converter' );
         cftg_field_row( 'cftg_cf_parts_missing',         'Parts Missing',                                   'TEXT', 'Yes or No' );
         cftg_field_row( 'cftg_cf_missing_parts_notes',   'Missing Parts Description',                       'TEXT', 'What is missing' );
         cftg_field_row( 'cftg_cf_vehicle_pickup_postal', 'What is the postal code of the pick-up location?','TEXT', 'Postal code from vehicle postal step' );

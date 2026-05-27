@@ -129,8 +129,8 @@ class CFTG_Form_Handler {
         $shared_keys = [ 'utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid' ];
         $by_type = [
             'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
-            'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
-            'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','engine_running','parts_missing','whats_missing' ],
+            'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit','city' ],
+            'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','mileage','engine_running','catalytic_converter','parts_missing','whats_missing' ],
         ];
         $out = [];
         foreach ( array_merge( $by_type[ $type ] ?? [], $shared_keys ) as $k ) {
@@ -196,13 +196,14 @@ class CFTG_Form_Handler {
             $this->utm_custom_fields( $f )
         );
         return [
-            'firstName'   => $f['first_name'] ?? '',
-            'lastName'    => $f['last_name']  ?? '',
-            'email'       => $f['email']      ?? '',
-            'phone'       => $f['phone']      ?? '',
-            'postalCode'  => $f['postal']     ?? '',
-            'tags'        => [ 'CFT - Scrap Metal' ],
-            'source'      => 'CFT Scrap Metal Form',
+            'firstName'    => $f['first_name'] ?? '',
+            'lastName'     => $f['last_name']  ?? '',
+            'email'        => $f['email']      ?? '',
+            'phone'        => $f['phone']      ?? '',
+            'city'         => $f['city']       ?? '',
+            'postalCode'   => $f['postal']     ?? '',
+            'tags'         => [ 'CFT - Scrap Metal' ],
+            'source'       => 'CFT Scrap Metal Form',
             'customFields' => $custom,
         ];
     }
@@ -210,26 +211,37 @@ class CFTG_Form_Handler {
     /* ── Vehicle Quote ── */
     private function build_vehicle_quote(): array {
         $f = $this->clean( $_POST );
+
+        /* Combine year + make + model into one string for the
+           "What is the Make, Model, Year?" GHL field */
+        $year  = trim( $f['vehicle_year']  ?? '' );
+        $make  = trim( $f['vehicle_make']  ?? '' );
+        $model = trim( $f['vehicle_model'] ?? '' );
+        $make_model_year = trim( "{$year} {$make} {$model}" );
+
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_vehicle_year'          => $f['vehicle_year']   ?? '',
-                'cftg_cf_vehicle_make'          => $f['vehicle_make']   ?? '',
-                'cftg_cf_vehicle_model'         => $f['vehicle_model']  ?? '',
-                'cftg_cf_engine_running'        => $f['engine_running'] ?? '',
-                'cftg_cf_parts_missing'         => $f['parts_missing']  ?? '',
-                'cftg_cf_missing_parts_notes'   => $f['whats_missing']  ?? '',
-                'cftg_cf_vehicle_pickup_postal' => $f['postal']         ?? '',
+                'cftg_cf_vehicle_year'          => $year,
+                'cftg_cf_vehicle_make'          => $make,
+                'cftg_cf_vehicle_model'         => $model,
+                'cftg_cf_make_model_year'       => $make_model_year,
+                'cftg_cf_mileage'               => $f['mileage']             ?? '',
+                'cftg_cf_engine_running'        => $f['engine_running']      ?? '',
+                'cftg_cf_catalytic_converter'   => $f['catalytic_converter'] ?? '',
+                'cftg_cf_parts_missing'         => $f['parts_missing']       ?? '',
+                'cftg_cf_missing_parts_notes'   => $f['whats_missing']       ?? '',
+                'cftg_cf_vehicle_pickup_postal' => $f['postal']              ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );
         return [
-            'firstName'   => $f['first_name'] ?? '',
-            'lastName'    => $f['last_name']  ?? '',
-            'email'       => $f['email']      ?? '',
-            'phone'       => $f['phone']      ?? '',
-            'postalCode'  => $f['postal']     ?? '',
-            'tags'        => [ 'CFT - Vehicle Quote' ],
-            'source'      => 'CFT Vehicle Quote Form',
+            'firstName'    => $f['first_name'] ?? '',
+            'lastName'     => $f['last_name']  ?? '',
+            'email'        => $f['email']      ?? '',
+            'phone'        => $f['phone']      ?? '',
+            'postalCode'   => $f['postal']     ?? '',
+            'tags'         => [ 'CFT - Vehicle Quote' ],
+            'source'       => 'CFT Vehicle Quote Form',
             'customFields' => $custom,
         ];
     }

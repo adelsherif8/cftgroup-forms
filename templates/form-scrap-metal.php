@@ -142,10 +142,11 @@ $styles = cftg_section_styles( 'scrap_metal' );
           </div>
         </div>
 
-        <!-- Step 3: Postal code -->
+        <!-- Step 3: Location -->
         <div class="cftg-step" data-step="3">
           <h2 class="cftg-q-title">Where are you located?</h2>
-          <p class="cftg-q-sub">Enter your postal code so we can serve you better</p>
+          <p class="cftg-q-sub">Enter your city and postal code so we can serve you better</p>
+          <div class="cftg-field"><label class="cftg-label">City</label><input type="text" class="cftg-input" name="city" placeholder="e.g. Ottawa"></div>
           <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
