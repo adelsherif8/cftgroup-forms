@@ -188,10 +188,13 @@ class CFTG_Form_Handler {
 
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_scrap_types'  => $f['scrap_types'] ?? '',
-                'cftg_cf_load_size'    => $f['load_size']   ?? '',
-                'cftg_cf_exact_weight' => $exact_weight,
-                'cftg_cf_scrap_postal' => $f['postal']      ?? '',
+                'cftg_cf_scrap_types'           => $f['scrap_types'] ?? '',
+                'cftg_cf_load_size'             => $f['load_size']   ?? '',
+                'cftg_cf_exact_weight'          => $exact_weight,
+                'cftg_cf_scrap_postal'          => $f['postal']      ?? '',
+                /* Workflows use the same "pick-up postal" field for both
+                   vehicle and scrap, so also write postal there. */
+                'cftg_cf_vehicle_pickup_postal' => $f['postal']      ?? '',
             ] ),
             $this->utm_custom_fields( $f )
         );
