@@ -52,7 +52,6 @@
     /* Scrap Metal */
     'contact.scrap_types':                              'cftg_cf_scrap_types',
     'contact.what_do_you_need_to_scrap':                'cftg_cf_scrap_types',
-    'contact.what_are_you_looking_to_recycle':          'cftg_cf_scrap_types',
     'contact.load_size':                                'cftg_cf_load_size',
     'contact.exact_weight':                             'cftg_cf_exact_weight',
     'contact.scrap_postal':                             'cftg_cf_scrap_postal',
