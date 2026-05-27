@@ -204,7 +204,10 @@
   gap: 8px;
   font-size: 15px;
   color: #ffffff;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
+a.cftg-contact-item:hover { color: var(--cftg-gold); }
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
 
 /* Logo on left — height is set inline from admin design panel */

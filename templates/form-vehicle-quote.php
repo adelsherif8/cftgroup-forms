@@ -23,8 +23,8 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         <div class="cftg-feat-item"><i class="fa-solid fa-check"></i> <?php echo esc_html( $d['feat_4'] ); ?></div>
       </div>
       <div class="cftg-contact-row">
-        <div class="cftg-contact-item"><i class="fa-solid fa-phone"></i> <?php echo esc_html( $d['phone'] ); ?></div>
-        <div class="cftg-contact-item"><i class="fa-solid fa-envelope"></i> <?php echo esc_html( $d['email'] ?? 'info@cftgroup.ca' ); ?></div>
+        <a class="cftg-contact-item" href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $d['phone'] ) ); ?>"><i class="fa-solid fa-phone"></i> <?php echo esc_html( $d['phone'] ); ?></a>
+        <a class="cftg-contact-item" href="mailto:<?php echo esc_attr( $d['email'] ?? 'info@cftgroup.ca' ); ?>"><i class="fa-solid fa-envelope"></i> <?php echo esc_html( $d['email'] ?? 'info@cftgroup.ca' ); ?></a>
         <div class="cftg-contact-item"><i class="fa-solid fa-clock"></i> <?php echo esc_html( $d['hours'] ); ?></div>
       </div>
     </div>
