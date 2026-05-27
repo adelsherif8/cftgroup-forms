@@ -231,8 +231,8 @@ function cftg_field_row( $option, $label, $type, $desc ) {
         <span class="cftg-type-badge"><?php echo esc_html( $type ); ?></span></th>
     <td>
       <input type="text" id="<?php echo esc_attr( $option ); ?>" name="<?php echo esc_attr( $option ); ?>"
-             value="<?php echo esc_attr( $val ); ?>" class="regular-text cftg-field-id-input" placeholder="Paste GHL custom field ID here">
-      <p class="description"><?php echo esc_html( $desc ); ?></p>
+             value="<?php echo esc_attr( $val ); ?>" class="regular-text cftg-field-id-input" placeholder="UUID or contact.field_key">
+      <p class="description"><?php echo esc_html( $desc ); ?> — accepts UUID <em>or</em> a key like <code>contact.load_size</code></p>
     </td>
   </tr>
   <?php
