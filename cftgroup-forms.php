@@ -21,10 +21,17 @@ define( 'CFTG_GITHUB_REPO', 'adelsherif8/cftgroup-forms' );
 /* ── Includes ─────────────────────────────────────────────── */
 require_once CFTG_DIR . 'includes/helpers.php';
 require_once CFTG_DIR . 'includes/class-ghl-api.php';
+require_once CFTG_DIR . 'includes/class-entries.php';
 require_once CFTG_DIR . 'includes/class-form-handler.php';
 require_once CFTG_DIR . 'includes/class-updater.php';
 require_once CFTG_DIR . 'admin/admin-page.php';
+require_once CFTG_DIR . 'admin/entries-page.php';
 require_once CFTG_DIR . 'admin/instructions-page.php';
+
+/* ── Entries DB table: create on activation, also check on every load
+       so older installs upgrade automatically. ─────────────────── */
+register_activation_hook( __FILE__, [ 'CFTG_Entries', 'maybe_create_table' ] );
+add_action( 'plugins_loaded', [ 'CFTG_Entries', 'maybe_create_table' ] );
 
 /* ── Auto-updater (checks GitHub releases) ────────────────── */
 new CFTG_Updater( CFTG_GITHUB_REPO, __FILE__, CFTG_VERSION );
@@ -89,6 +96,7 @@ function cftg_register_admin_menu() {
         30
     );
     add_submenu_page( 'cftg-settings', 'Settings',     'Settings',     'manage_options', 'cftg-settings',     'cftg_render_settings_page' );
+    add_submenu_page( 'cftg-settings', 'Entries',      'Entries',      'manage_options', 'cftg-entries',      'cftg_render_entries_page' );
     add_submenu_page( 'cftg-settings', 'Instructions', 'Instructions', 'manage_options', 'cftg-instructions', 'cftg_render_instructions_page' );
 }
 

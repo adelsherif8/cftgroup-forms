@@ -85,14 +85,49 @@ class CFTG_Form_Handler {
             wp_send_json_error( [ 'message' => 'Unknown form type.' ] );
         }
 
+        /* Save entry locally before calling GHL so we never lose a lead */
+        $entry_id = CFTG_Entries::insert( [
+            'form_type'  => $type,
+            'first_name' => $payload['firstName']  ?? '',
+            'last_name'  => $payload['lastName']   ?? '',
+            'email'      => $payload['email']      ?? '',
+            'phone'      => $payload['phone']      ?? '',
+            'postal'     => $payload['postalCode'] ?? '',
+            'tag'        => $payload['tags'][0]    ?? '',
+            'data'       => $this->entry_data_from_post( $type ),
+            'ip'         => $this->get_ip(),
+        ] );
+
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
+
+        CFTG_Entries::update_ghl_status(
+            $entry_id,
+            $result['success'] ? 'sent' : 'failed',
+            $result['message'] ?? ''
+        );
 
         if ( $result['success'] ) {
             wp_send_json_success( [ 'message' => 'Submitted successfully.' ] );
         } else {
             wp_send_json_error( [ 'message' => $result['message'] ?? 'Submission failed.' ] );
         }
+    }
+
+    /* ── Per-form-type data snapshot for the entries log ── */
+    private function entry_data_from_post( string $type ): array {
+        $f = $this->clean( $_POST );
+        $shared_keys = [ 'utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid' ];
+        $by_type = [
+            'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
+            'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
+            'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','engine_running','parts_missing','whats_missing' ],
+        ];
+        $out = [];
+        foreach ( array_merge( $by_type[ $type ] ?? [], $shared_keys ) as $k ) {
+            if ( ! empty( $f[ $k ] ) ) $out[ $k ] = $f[ $k ];
+        }
+        return $out;
     }
 
     /* ── UTM + GCLID fields via saved option UUIDs ── */
