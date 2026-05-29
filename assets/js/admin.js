@@ -55,39 +55,28 @@
     'contact.are_parts_missing':                        'cftg_cf_parts_missing',
     'contact.whats_missing':                            'cftg_cf_missing_parts_notes',
     'contact.what_is_the_postal_code_of_the_pickup_location': 'cftg_cf_vehicle_pickup_postal',
-    /* UTM custom */
-    'contact.utmmedium_custom':                         'cftg_cf_utm_medium',
-    'contact.utmcampaign_custom':                       'cftg_cf_utm_campaign',
-    'contact.utmcontent_custom':                        'cftg_cf_utm_content',
-    'contact.utm_keyword':                              'cftg_cf_utm_keyword',
-    'contact.utm_content':                              'cftg_cf_utm_content_std',
-    'contact.utm_campaign':                             'cftg_cf_utm_campaign_std',
-    'contact.attributionsourcegclid':                   'cftg_cf_gclid',
+    /* UTM custom — canonical lowercase _custom schema */
+    'contact.utmcampaign_custom':                       'cftg_cf_utmcampaign_custom',
+    'contact.utmmedium_custom':                         'cftg_cf_utmmedium_custom',
+    'contact.utmcontent_custom':                        'cftg_cf_utmcontent_custom',
+    'contact.utmkeyword_custom':                        'cftg_cf_utmkeyword_custom',
+    'contact.utmterm_custom':                           'cftg_cf_utmterm_custom',
+    'contact.gclid_custom':                             'cftg_cf_gclid_custom',
     /* Source CFT */
     'contact.source_cft':                               'cftg_cf_source_cft',
   };
   /* Fallback by normalised field name (lowercase, alphanumerics) */
   const NAME_MAP = {
-    'gclid':                'cftg_cf_gclid',
-    'dispose types':        'cftg_cf_dispose_types',
-    'delivery date':        'cftg_cf_delivery_date',
-    'rental duration':      'cftg_cf_bin_duration',
-    'bin size':             'cftg_cf_bin_size',
-    'scrap types':          'cftg_cf_scrap_types',
     'load size':            'cftg_cf_load_size',
     'exact weight':         'cftg_cf_exact_weight',
     'scrap metal postal':   'cftg_cf_scrap_postal',
-    'vehicle year':         'cftg_cf_vehicle_year',
-    'vehicle make':         'cftg_cf_vehicle_make',
-    'vehicle model':        'cftg_cf_vehicle_model',
-    'engine running':       'cftg_cf_engine_running',
-    'parts missing':        'cftg_cf_parts_missing',
-    'utmmedium_custom':     'cftg_cf_utm_medium',
-    'utmcampaign_custom':   'cftg_cf_utm_campaign',
-    'utmcontent_custom':    'cftg_cf_utm_content',
-    'utm keyword':          'cftg_cf_utm_keyword',
-    'utm content':          'cftg_cf_utm_content_std',
-    'utm campaign':         'cftg_cf_utm_campaign_std',
+    'source cft':           'cftg_cf_source_cft',
+    'utmcampaign_custom':   'cftg_cf_utmcampaign_custom',
+    'utmmedium_custom':     'cftg_cf_utmmedium_custom',
+    'utmcontent_custom':    'cftg_cf_utmcontent_custom',
+    'utmkeyword_custom':    'cftg_cf_utmkeyword_custom',
+    'utmterm_custom':       'cftg_cf_utmterm_custom',
+    'gclid_custom':         'cftg_cf_gclid_custom',
   };
 
   function matchOption( field ) {

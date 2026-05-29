@@ -15,9 +15,9 @@ function cftg_handle_save_settings() {
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
-    'cftg_cf_utm_medium', 'cftg_cf_utm_campaign', 'cftg_cf_utm_content',
-    'cftg_cf_utm_keyword', 'cftg_cf_utm_content_std', 'cftg_cf_utm_campaign_std',
-    'cftg_cf_gclid', 'cftg_cf_source_cft',
+    'cftg_cf_utmcampaign_custom', 'cftg_cf_utmmedium_custom', 'cftg_cf_utmcontent_custom',
+    'cftg_cf_utmkeyword_custom', 'cftg_cf_utmterm_custom', 'cftg_cf_gclid_custom',
+    'cftg_cf_source_cft',
   ];
   foreach ( $text_fields as $key ) {
     if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
@@ -210,13 +210,12 @@ function cftg_tab_fields() { ?>
       <h3><span class="cftg-form-badge" style="background:#e0e7ff;color:#3730a3;border:1px solid #c7d2fe">UTM &amp; GCLID Tracking</span></h3>
       <table class="form-table cftg-form-table">
         <?php
-        cftg_field_row( 'cftg_cf_utm_medium',        'UTMmedium_custom',   'TEXT', 'utm_medium from URL' );
-        cftg_field_row( 'cftg_cf_utm_campaign',       'UTMCampaign_Custom', 'TEXT', 'utm_campaign from URL' );
-        cftg_field_row( 'cftg_cf_utm_content',        'UTMContent_custom',  'TEXT', 'utm_content from URL' );
-        cftg_field_row( 'cftg_cf_utm_keyword',        'utm Keyword',        'TEXT', 'utm_term / keyword from URL' );
-        cftg_field_row( 'cftg_cf_utm_content_std',    'utm Content',        'TEXT', 'utm_content (GHL built-in field)' );
-        cftg_field_row( 'cftg_cf_utm_campaign_std',   'utm Campaign',       'TEXT', 'utm_campaign (GHL built-in field)' );
-        cftg_field_row( 'cftg_cf_gclid',              'GCLID',              'TEXT', 'Google Click ID from URL' );
+        cftg_field_row( 'cftg_cf_utmcampaign_custom', 'utmcampaign_custom', 'TEXT', 'UTM campaign from URL' );
+        cftg_field_row( 'cftg_cf_utmmedium_custom',   'utmmedium_custom',   'TEXT', 'UTM medium from URL' );
+        cftg_field_row( 'cftg_cf_utmcontent_custom',  'utmcontent_custom',  'TEXT', 'UTM content from URL' );
+        cftg_field_row( 'cftg_cf_utmkeyword_custom',  'utmkeyword_custom',  'TEXT', 'UTM keyword from URL' );
+        cftg_field_row( 'cftg_cf_utmterm_custom',     'utmterm_custom',     'TEXT', 'UTM term from URL' );
+        cftg_field_row( 'cftg_cf_gclid_custom',       'gclid_custom',       'TEXT', 'Google Click ID from URL' );
         cftg_field_row( 'cftg_cf_source_cft',         'Source CFT',         'TEXT', 'Form name: "Vehicle Estimate Form", "Metal Estimate Form" or "Bin Estimate Form"' );
         ?>
       </table>

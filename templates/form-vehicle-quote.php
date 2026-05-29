@@ -49,9 +49,9 @@ $styles = cftg_section_styles( 'vehicle_quote' );
             <div><strong>Tell us about your vehicle</strong><span>Year, make and model — takes 60 seconds</span></div>
           </div>
           <div class="cftg-vehicle-grid">
-            <div class="cftg-field"><label class="cftg-label">Vehicle Year</label><input type="text" class="cftg-input" name="vehicle_year" placeholder="2018"></div>
-            <div class="cftg-field"><label class="cftg-label">Vehicle Make</label><input type="text" class="cftg-input" name="vehicle_make" placeholder="Honda"></div>
-            <div class="cftg-field"><label class="cftg-label">Vehicle Model</label><input type="text" class="cftg-input" name="vehicle_model" placeholder="Civic"></div>
+            <div class="cftg-field"><label class="cftg-label">Vehicle Year</label><input type="text" class="cftg-input" name="vehicle_year" placeholder="2018" required></div>
+            <div class="cftg-field"><label class="cftg-label">Vehicle Make</label><input type="text" class="cftg-input" name="vehicle_make" placeholder="Honda" required></div>
+            <div class="cftg-field"><label class="cftg-label">Vehicle Model</label><input type="text" class="cftg-input" name="vehicle_model" placeholder="Civic" required></div>
           </div>
           <div class="cftg-actions">
             <button class="cftg-btn-next" type="button">Get My Estimate <i class="fa-solid fa-arrow-right"></i></button>
@@ -91,7 +91,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           <div class="cftg-conditional-field" style="display:none">
             <div class="cftg-field">
               <label class="cftg-label">What's missing?</label>
-              <input type="text" class="cftg-input" name="whats_missing" placeholder="e.g. Engine, catalytic converter, tires…">
+              <input type="text" class="cftg-input" name="whats_missing" placeholder="e.g. Engine, catalytic converter, tires…" required>
             </div>
           </div>
           <div class="cftg-actions">
@@ -104,7 +104,7 @@ $styles = cftg_section_styles( 'vehicle_quote' );
         <div class="cftg-step" data-step="4">
           <h2 class="cftg-q-title">What is the postal code of the pick-up location?</h2>
           <p class="cftg-q-sub">Enter your postal code so we can arrange pick-up</p>
-          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8"></div>
+          <div class="cftg-field"><label class="cftg-label">Postal Code</label><input type="text" class="cftg-input" name="postal" placeholder="e.g. M5V 3A8" required></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
             <button class="cftg-btn-next" type="button">Continue <i class="fa-solid fa-arrow-right"></i></button>
@@ -116,11 +116,11 @@ $styles = cftg_section_styles( 'vehicle_quote' );
           <h2 class="cftg-q-title">Almost there!</h2>
           <p class="cftg-q-sub">Enter your contact details to receive your quote</p>
           <div class="cftg-row">
-            <div class="cftg-field"><label class="cftg-label">First Name</label><input type="text" class="cftg-input" name="first_name" placeholder="John"></div>
-            <div class="cftg-field"><label class="cftg-label">Last Name</label><input type="text" class="cftg-input" name="last_name" placeholder="Smith"></div>
+            <div class="cftg-field"><label class="cftg-label">First Name</label><input type="text" class="cftg-input" name="first_name" placeholder="John" required></div>
+            <div class="cftg-field"><label class="cftg-label">Last Name</label><input type="text" class="cftg-input" name="last_name" placeholder="Smith" required></div>
           </div>
-          <div class="cftg-field"><label class="cftg-label">Email Address</label><input type="email" class="cftg-input" name="email" placeholder="john@example.com"></div>
-          <div class="cftg-field"><label class="cftg-label">Phone Number</label><input type="tel" class="cftg-input" name="phone" placeholder="+1 (416) 555-0100"></div>
+          <div class="cftg-field"><label class="cftg-label">Email Address</label><input type="email" class="cftg-input" name="email" placeholder="john@example.com" required></div>
+          <div class="cftg-field"><label class="cftg-label">Phone Number</label><input type="tel" class="cftg-input" name="phone" placeholder="+1 (416) 555-0100" required></div>
           <div class="cftg-actions">
             <button class="cftg-btn-back" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
             <button class="cftg-btn-submit" type="button">Get My Quote <i class="fa-solid fa-paper-plane"></i></button>

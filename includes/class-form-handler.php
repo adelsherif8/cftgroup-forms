@@ -126,7 +126,7 @@ class CFTG_Form_Handler {
     /* ── Per-form-type data snapshot for the entries log ── */
     private function entry_data_from_post( string $type ): array {
         $f = $this->clean( $_POST );
-        $shared_keys = [ 'utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid' ];
+        $shared_keys = [ 'utmcampaign_custom','utmmedium_custom','utmcontent_custom','utmkeyword_custom','utmterm_custom','gclid_custom' ];
         $by_type = [
             'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
             'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
@@ -139,16 +139,15 @@ class CFTG_Form_Handler {
         return $out;
     }
 
-    /* ── UTM + GCLID fields via saved option UUIDs ── */
+    /* ── UTM + GCLID fields (new canonical _custom schema) ── */
     private function utm_custom_fields( array $f ): array {
         return CFTG_GHL_API::build_custom_fields( [
-            'cftg_cf_utm_medium'       => $f['utm_medium']   ?? '',
-            'cftg_cf_utm_campaign'     => $f['utm_campaign'] ?? '',
-            'cftg_cf_utm_content'      => $f['utm_content']  ?? '',
-            'cftg_cf_utm_keyword'      => $f['utm_term']     ?? '',
-            'cftg_cf_utm_content_std'  => $f['utm_content']  ?? '',
-            'cftg_cf_utm_campaign_std' => $f['utm_campaign'] ?? '',
-            'cftg_cf_gclid'            => $f['gclid']        ?? '',
+            'cftg_cf_utmcampaign_custom' => $f['utmcampaign_custom'] ?? '',
+            'cftg_cf_utmmedium_custom'   => $f['utmmedium_custom']   ?? '',
+            'cftg_cf_utmcontent_custom'  => $f['utmcontent_custom']  ?? '',
+            'cftg_cf_utmkeyword_custom'  => $f['utmkeyword_custom']  ?? '',
+            'cftg_cf_utmterm_custom'     => $f['utmterm_custom']     ?? '',
+            'cftg_cf_gclid_custom'       => $f['gclid_custom']       ?? '',
         ] );
     }
 

@@ -60,9 +60,23 @@
       if ( ! step ) return true;
 
       for ( const inp of step.querySelectorAll( 'input[required], select[required], textarea[required]' ) ) {
+        /* Skip required inputs hidden inside a collapsed conditional block */
+        if ( inp.offsetParent === null ) continue;
         if ( ! inp.value.trim() ) {
           this._showError( 'Please fill in all required fields.' );
           inp.focus();
+          return false;
+        }
+      }
+
+      /* Required radio groups (at least one option must be selected) */
+      const radios = step.querySelectorAll( 'input[type="radio"]' );
+      const radioNames = new Set();
+      radios.forEach( r => radioNames.add( r.name ) );
+      for ( const name of radioNames ) {
+        const checked = step.querySelector( `input[type="radio"][name="${ name }"]:checked` );
+        if ( ! checked ) {
+          this._showError( 'Please make a selection before continuing.' );
           return false;
         }
       }
@@ -163,26 +177,23 @@
     }
   }
 
-  /* ── UTM capture ── */
-  const UTM_KEYS = [ 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid' ];
-
-  function captureUtms() {
-    const params = new URLSearchParams( window.location.search );
-    UTM_KEYS.forEach( k => {
-      const v = params.get( k );
-      if ( v ) sessionStorage.setItem( 'cftg_' + k, v );
-    } );
-  }
+  /* ── UTM / GCLID: read whatever the site-wide tracking script
+        stashed in sessionStorage['scad_tracking_params'] and append
+        the canonical lowercase keys to the form submission. ── */
+  const CUSTOM_KEYS = [
+    'utmcampaign_custom', 'utmmedium_custom', 'utmcontent_custom',
+    'utmkeyword_custom',  'utmterm_custom',    'gclid_custom'
+  ];
 
   function appendUtms( data ) {
-    UTM_KEYS.forEach( k => {
-      const v = sessionStorage.getItem( 'cftg_' + k );
-      if ( v ) data.append( k, v );
+    let stored = {};
+    try { stored = JSON.parse( sessionStorage.getItem( 'scad_tracking_params' ) || '{}' ); } catch ( e ) {}
+    CUSTOM_KEYS.forEach( k => {
+      if ( stored[ k ] ) data.append( k, stored[ k ] );
     } );
   }
 
   document.addEventListener( 'DOMContentLoaded', () => {
-    captureUtms();
     const ts = Math.floor( Date.now() / 1000 );
     document.querySelectorAll( '.cftg-loaded-at' ).forEach( el => el.value = ts );
     document.querySelectorAll( '.cftg-wrap[data-total]' ).forEach( wrap => new CftgForm( wrap ) );
