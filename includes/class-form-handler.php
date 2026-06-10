@@ -8,6 +8,16 @@ class CFTG_Form_Handler {
         add_action( 'wp_ajax_nopriv_cftg_submit',     [ $this, 'handle_submit' ] );
         add_action( 'wp_ajax_cftg_test_connection',   [ $this, 'handle_test_connection' ] );
         add_action( 'wp_ajax_cftg_fetch_fields',      [ $this, 'handle_fetch_fields' ] );
+        /* Always-fresh nonce — bypass page caching so the inline nonce
+           printed into cached HTML can never go stale. */
+        add_action( 'wp_ajax_cftg_get_nonce',         [ $this, 'handle_get_nonce' ] );
+        add_action( 'wp_ajax_nopriv_cftg_get_nonce',  [ $this, 'handle_get_nonce' ] );
+    }
+
+    /* ── Return a fresh submission nonce ── */
+    public function handle_get_nonce(): void {
+        nocache_headers();
+        wp_send_json_success( [ 'nonce' => wp_create_nonce( 'cftg_submit' ) ] );
     }
 
     /* ── Nonce check ── */

@@ -98,6 +98,16 @@
       if ( this.errorEl ) { this.errorEl.textContent = ''; this.errorEl.style.display = 'none'; }
     }
 
+    /* Fetch a fresh nonce so cached pages with a stale nonce still submit */
+    _freshNonce() {
+      const d = new FormData();
+      d.append( 'action', 'cftg_get_nonce' );
+      return fetch( cftgData.ajaxUrl, { method: 'POST', body: d, cache: 'no-store' } )
+        .then( r => r.json() )
+        .then( res => ( res && res.success && res.data && res.data.nonce ) ? res.data.nonce : cftgData.nonce )
+        .catch( () => cftgData.nonce );
+    }
+
     /* ── Submit ── */
     submit() {
       if ( ! this._validate() ) return;
@@ -105,21 +115,23 @@
       const btn = this.wrap.querySelector( '.cftg-btn-submit' );
       if ( btn ) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…'; }
 
-      const data = new FormData();
-      data.append( 'action',    'cftg_submit' );
-      data.append( 'nonce',     cftgData.nonce );
-      data.append( 'form_type', this.formType );
+      this._freshNonce().then( nonce => {
+        const data = new FormData();
+        data.append( 'action',    'cftg_submit' );
+        data.append( 'nonce',     nonce );
+        data.append( 'form_type', this.formType );
 
-      this.wrap.querySelectorAll( 'input, select, textarea' ).forEach( el => {
-        if ( ! el.name ) return;
-        if ( el.type === 'checkbox' )      { if ( el.checked ) data.append( el.name, el.value ); }
-        else if ( el.type === 'radio' )    { if ( el.checked ) data.set( el.name, el.value ); }
-        else                               { data.set( el.name, el.value ); }
-      } );
+        this.wrap.querySelectorAll( 'input, select, textarea' ).forEach( el => {
+          if ( ! el.name ) return;
+          if ( el.type === 'checkbox' )      { if ( el.checked ) data.append( el.name, el.value ); }
+          else if ( el.type === 'radio' )    { if ( el.checked ) data.set( el.name, el.value ); }
+          else                               { data.set( el.name, el.value ); }
+        } );
 
-      appendUtms( data );
+        appendUtms( data );
 
-      fetch( cftgData.ajaxUrl, { method: 'POST', body: data } )
+        return fetch( cftgData.ajaxUrl, { method: 'POST', body: data } );
+      } )
         .then( r => r.json() )
         .then( res => {
           if ( res.success ) {
