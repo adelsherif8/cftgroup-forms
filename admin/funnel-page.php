@@ -85,14 +85,26 @@ function cftg_render_funnel_page(): void {
             box-shadow:0 1px 3px rgba(0,0,0,0.04);
         }
         .cftg-fnl-section + .cftg-fnl-section {
-            border-top: 3px solid #fecaca;
+            border-top: 3px solid #fee2e2;
+        }
+        .cftg-fnl-formhead {
+            position:relative;
+        }
+        .cftg-fnl-formhead h2 {
+            border-left:4px solid #eeae00;
+            padding-left:12px;
         }
         .cftg-fnl-title {
-            font-size:14px; font-weight:700; color:#4338ca;
+            font-size:14px; font-weight:800; color:#0a0a0a;
             text-transform:none; letter-spacing:0;
             margin:0 0 4px;
         }
         .cftg-fnl-title.drop { color:#dc2626; }
+        .cftg-fnl-title .accent {
+            display:inline-block; width:8px; height:8px;
+            background:#eeae00; border-radius:2px; margin-right:8px;
+            vertical-align:middle;
+        }
         .cftg-fnl-subtitle {
             font-size:12px; color:#6b7280;
             margin:0 0 22px;
@@ -121,9 +133,11 @@ function cftg_render_funnel_page(): void {
         }
         .cftg-fnl-bar {
             height:100%;
-            background:#6366f1; /* indigo, like the reference */
+            /* CFT brand: black → gold gradient */
+            background:linear-gradient(90deg, #0a0a0a 0%, #1f2937 30%, #eeae00 100%);
             border-radius:4px;
             transition:width 0.3s ease;
+            box-shadow:inset 0 -1px 0 rgba(0,0,0,0.1);
         }
         .cftg-fnl-count {
             text-align:right;
@@ -141,9 +155,9 @@ function cftg_render_funnel_page(): void {
             padding:6px 0;
         }
         .cftg-fnl-drop-bar {
-            background:#9ca3af; /* gray for normal */
+            background:#374151; /* dark gray for normal */
         }
-        .cftg-fnl-drop-bar.hi { background:#dc2626; } /* red for biggest drop-off */
+        .cftg-fnl-drop-bar.hi { background:linear-gradient(90deg, #dc2626 0%, #b91c1c 100%); } /* red for biggest drop-off */
         .cftg-fnl-drop-pct {
             text-align:right;
             font-size:12px; font-weight:700; color:#111827;
