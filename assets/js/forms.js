@@ -1,12 +1,41 @@
 ( function () {
   'use strict';
 
+  /* ── Funnel tracking ──
+     Persistent session ID lives in localStorage so we can re-identify
+     the same visitor across page reloads in the same browser. */
+  function getSessionId() {
+    try {
+      let id = localStorage.getItem( 'cftg_session_id' );
+      if ( ! id ) {
+        id = 'cftg-' + Date.now().toString( 36 ) + '-' +
+             Math.random().toString( 36 ).slice( 2, 10 );
+        localStorage.setItem( 'cftg_session_id', id );
+      }
+      return id;
+    } catch ( e ) {
+      return 'cftg-anon-' + Math.floor( Math.random() * 1e9 );
+    }
+  }
+  function track( formType, event, step ) {
+    const d = new FormData();
+    d.append( 'action',    'cftg_track' );
+    d.append( 'session',   getSessionId() );
+    d.append( 'form_type', formType );
+    d.append( 'event',     event );
+    d.append( 'step',      String( step || 0 ) );
+    d.append( 'page_url',  window.location.origin + window.location.pathname );
+    /* Fire-and-forget. Keep alive so it survives navigation. */
+    fetch( cftgData.ajaxUrl, { method: 'POST', body: d, keepalive: true } ).catch( () => {} );
+  }
+
   class CftgForm {
     constructor( wrap ) {
       this.wrap     = wrap;
       this.formType = wrap.dataset.formType;
       this.total    = parseInt( wrap.dataset.total, 10 );
       this.current  = 1;
+      this._seenSteps = new Set();
 
       this.progFill  = wrap.querySelector( '.cftg-prog-fill' );
       this.progPct   = wrap.querySelector( '.cftg-pct-label' );
@@ -14,6 +43,16 @@
 
       this._bind();
       this._refresh();
+
+      /* Funnel: form rendered + first step reached */
+      track( this.formType, 'view', 0 );
+      this._trackStep( 1 );
+    }
+
+    _trackStep( n ) {
+      if ( this._seenSteps.has( n ) ) return;
+      this._seenSteps.add( n );
+      track( this.formType, 'step', n );
     }
 
     /* ── Step visibility ── */
@@ -38,6 +77,7 @@
       if ( this.current < this.total ) {
         this.current++;
         this._refresh();
+        this._trackStep( this.current );
         this._scrollTop();
       }
     }
@@ -135,6 +175,7 @@
         .then( r => r.json() )
         .then( res => {
           if ( res.success ) {
+            track( this.formType, 'submit', 0 );
             this.current = this.total + 1;
             this._refresh();
           } else {

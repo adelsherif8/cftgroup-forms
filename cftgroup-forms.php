@@ -22,16 +22,20 @@ define( 'CFTG_GITHUB_REPO', 'adelsherif8/cftgroup-forms' );
 require_once CFTG_DIR . 'includes/helpers.php';
 require_once CFTG_DIR . 'includes/class-ghl-api.php';
 require_once CFTG_DIR . 'includes/class-entries.php';
+require_once CFTG_DIR . 'includes/class-funnel.php';
 require_once CFTG_DIR . 'includes/class-form-handler.php';
 require_once CFTG_DIR . 'includes/class-updater.php';
 require_once CFTG_DIR . 'admin/admin-page.php';
 require_once CFTG_DIR . 'admin/entries-page.php';
+require_once CFTG_DIR . 'admin/funnel-page.php';
 require_once CFTG_DIR . 'admin/instructions-page.php';
 
-/* ── Entries DB table: create on activation, also check on every load
+/* ── DB tables: create on activation, also check on every load
        so older installs upgrade automatically. ─────────────────── */
 register_activation_hook( __FILE__, [ 'CFTG_Entries', 'maybe_create_table' ] );
-add_action( 'plugins_loaded', [ 'CFTG_Entries', 'maybe_create_table' ] );
+register_activation_hook( __FILE__, [ 'CFTG_Funnel',  'maybe_create_table' ] );
+add_action( 'plugins_loaded',       [ 'CFTG_Entries', 'maybe_create_table' ] );
+add_action( 'plugins_loaded',       [ 'CFTG_Funnel',  'maybe_create_table' ] );
 
 /* ── Clear leftover rate-limit transients (removed in 1.7.5) ── */
 add_action( 'plugins_loaded', function() {
@@ -105,6 +109,7 @@ function cftg_register_admin_menu() {
     );
     add_submenu_page( 'cftg-settings', 'Settings',     'Settings',     'manage_options', 'cftg-settings',     'cftg_render_settings_page' );
     add_submenu_page( 'cftg-settings', 'Entries',      'Entries',      'manage_options', 'cftg-entries',      'cftg_render_entries_page' );
+    add_submenu_page( 'cftg-settings', 'Funnel',       'Funnel',       'manage_options', 'cftg-funnel',       'cftg_render_funnel_page' );
     add_submenu_page( 'cftg-settings', 'Instructions', 'Instructions', 'manage_options', 'cftg-instructions', 'cftg_render_instructions_page' );
 }
 

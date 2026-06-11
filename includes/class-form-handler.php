@@ -12,6 +12,25 @@ class CFTG_Form_Handler {
            printed into cached HTML can never go stale. */
         add_action( 'wp_ajax_cftg_get_nonce',         [ $this, 'handle_get_nonce' ] );
         add_action( 'wp_ajax_nopriv_cftg_get_nonce',  [ $this, 'handle_get_nonce' ] );
+        /* Funnel tracking — fire-and-forget from forms.js */
+        add_action( 'wp_ajax_cftg_track',             [ $this, 'handle_track' ] );
+        add_action( 'wp_ajax_nopriv_cftg_track',      [ $this, 'handle_track' ] );
+    }
+
+    /* ── Record a funnel event (no nonce — public tracking) ── */
+    public function handle_track(): void {
+        nocache_headers();
+        $session   = sanitize_text_field( $_POST['session']   ?? '' );
+        $form_type = sanitize_key( $_POST['form_type']        ?? '' );
+        $event     = sanitize_key( $_POST['event']            ?? '' );
+        $step      = intval( $_POST['step']                   ?? 0 );
+        $page_url  = esc_url_raw( $_POST['page_url']          ?? '' );
+        $ua        = sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' );
+
+        if ( $session && $form_type && in_array( $event, [ 'view', 'step', 'submit' ], true ) ) {
+            CFTG_Funnel::track( $session, $form_type, $event, $step, $page_url, $this->get_ip(), $ua );
+        }
+        wp_send_json_success();
     }
 
     /* ── Return a fresh submission nonce ── */
