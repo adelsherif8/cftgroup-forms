@@ -44,9 +44,18 @@
       this._bind();
       this._refresh();
 
-      /* Funnel: form rendered + first step reached */
+      /* Funnel: form rendered = landing page visit.
+         Step 1 fires only when the user actually engages (focus or click). */
       track( this.formType, 'view', 0 );
-      this._trackStep( 1 );
+      const firstStep = () => {
+        this._trackStep( 1 );
+        this.wrap.removeEventListener( 'focusin', firstStep );
+        this.wrap.removeEventListener( 'click',   firstStep );
+        this.wrap.removeEventListener( 'change',  firstStep );
+      };
+      this.wrap.addEventListener( 'focusin', firstStep );
+      this.wrap.addEventListener( 'click',   firstStep );
+      this.wrap.addEventListener( 'change',  firstStep );
     }
 
     _trackStep( n ) {

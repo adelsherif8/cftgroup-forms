@@ -242,7 +242,10 @@ function cftg_render_funnel_page(): void {
 
             /* Build funnel rows in order */
             $rows = [];
-            $rows[] = [ 'label' => 'Visitor reached the form page',           'count' => $views ];
+            $landing_label = $page_url_arg
+                ? 'Visitor reached ' . $page_url_arg
+                : 'Visitor reached the landing page';
+            $rows[] = [ 'label' => $landing_label, 'count' => $views ];
             for ( $i = 1; $i <= ( $meta['steps'] ?? 1 ); $i++ ) {
                 $rows[] = [
                     'label' => $labels[ $i ] ?? ( 'Step ' . $i ),
