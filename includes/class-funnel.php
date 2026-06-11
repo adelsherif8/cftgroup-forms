@@ -121,14 +121,22 @@ class CFTG_Funnel {
         return $out;
     }
 
-    /* ── List distinct page URLs that have seen events ── */
+    /* ── List distinct page URLs that have seen events. Empty form_type
+       means "across all forms". ── */
     public static function distinct_pages( string $form_type, string $start, string $end ): array {
         global $wpdb;
         $table = self::table_name();
-        $rows = $wpdb->get_col( $wpdb->prepare(
-            "SELECT DISTINCT page_url FROM $table WHERE form_type=%s AND created_at BETWEEN %s AND %s AND page_url<>'' ORDER BY page_url",
-            $form_type, $start, $end
-        ) );
+        if ( $form_type !== '' ) {
+            $rows = $wpdb->get_col( $wpdb->prepare(
+                "SELECT DISTINCT page_url FROM $table WHERE form_type=%s AND created_at BETWEEN %s AND %s AND page_url<>'' ORDER BY page_url",
+                $form_type, $start, $end
+            ) );
+        } else {
+            $rows = $wpdb->get_col( $wpdb->prepare(
+                "SELECT DISTINCT page_url FROM $table WHERE created_at BETWEEN %s AND %s AND page_url<>'' ORDER BY page_url",
+                $start, $end
+            ) );
+        }
         return $rows ?: [];
     }
 }

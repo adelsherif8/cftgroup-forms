@@ -209,21 +209,19 @@ function cftg_render_funnel_page(): void {
                 <label>To</label>
                 <input type="date" name="end" value="<?php echo esc_attr( $end ); ?>">
             </div>
-            <?php
-            if ( $form_filter ):
-                $pages = CFTG_Funnel::distinct_pages( $form_filter, $start_dt, $end_dt );
-                if ( $pages ):
-            ?>
-                <div style="flex:1;min-width:240px">
-                    <label>Landing page</label>
-                    <select name="page_filter">
-                        <option value="">All pages</option>
-                        <?php foreach ( $pages as $p ): ?>
-                            <option value="<?php echo esc_attr( $p ); ?>" <?php selected( $page_filter, $p ); ?>><?php echo esc_html( $p ); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php endif; endif; ?>
+            <?php $pages = CFTG_Funnel::distinct_pages( $form_filter, $start_dt, $end_dt ); ?>
+            <div style="flex:1;min-width:240px">
+                <label>Landing page</label>
+                <select name="page_filter">
+                    <option value="">All pages</option>
+                    <?php foreach ( $pages as $p ): ?>
+                        <option value="<?php echo esc_attr( $p ); ?>" <?php selected( $page_filter, $p ); ?>><?php echo esc_html( $p ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if ( empty( $pages ) ): ?>
+                    <small style="display:block;color:#9ca3af;margin-top:4px">No tracked pages yet</small>
+                <?php endif; ?>
+            </div>
             <button type="submit" class="button button-primary">Apply</button>
             <?php if ( $form_filter || $page_filter || $start !== $start_default || $end !== $end_default ): ?>
                 <a href="?page=cftg-funnel" class="button">Reset</a>
