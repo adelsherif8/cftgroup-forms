@@ -92,6 +92,35 @@ class CFTG_Funnel {
         return [ 'views' => $views, 'steps' => $steps, 'submits' => $submits ];
     }
 
+    /* ── Drop-off summary — for each session that did NOT submit, find
+       the last step they reached. Returns [ step_num => sessions_left ]. */
+    public static function dropoffs( string $form_type, string $start, string $end, string $page_url = '' ): array {
+        global $wpdb;
+        $table = self::table_name();
+
+        $page_clause = $page_url !== '' ? $wpdb->prepare( ' AND page_url=%s', $page_url ) : '';
+
+        $rows = $wpdb->get_results( $wpdb->prepare(
+            "SELECT MAX(step_num) AS last_step
+             FROM $table
+             WHERE form_type=%s AND event='step' AND created_at BETWEEN %s AND %s $page_clause
+               AND session_id NOT IN (
+                 SELECT DISTINCT session_id FROM $table
+                 WHERE form_type=%s AND event='submit' AND created_at BETWEEN %s AND %s $page_clause
+               )
+             GROUP BY session_id",
+            $form_type, $start, $end, $form_type, $start, $end
+        ), ARRAY_A );
+
+        $out = [];
+        foreach ( $rows ?: [] as $r ) {
+            $s = intval( $r['last_step'] );
+            $out[ $s ] = ( $out[ $s ] ?? 0 ) + 1;
+        }
+        ksort( $out );
+        return $out;
+    }
+
     /* ── List distinct page URLs that have seen events ── */
     public static function distinct_pages( string $form_type, string $start, string $end ): array {
         global $wpdb;

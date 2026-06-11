@@ -1,45 +1,45 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/* ── Form meta (label, colour) — mirror what entries-page uses ── */
+/* ── Form meta ── */
 function cftg_funnel_meta(): array {
     return [
-        'bin_estimate'  => [ 'label' => 'Bin Estimate',  'color' => '#0ea5e9', 'bg' => '#e0f2fe', 'steps' => 6 ],
-        'scrap_metal'   => [ 'label' => 'Scrap Metal',   'color' => '#f59e0b', 'bg' => '#fef3c7', 'steps' => 4 ],
-        'vehicle_quote' => [ 'label' => 'Vehicle Quote', 'color' => '#10b981', 'bg' => '#d1fae5', 'steps' => 5 ],
+        'bin_estimate'  => [ 'label' => 'Bin Estimate',  'subtitle' => 'Every visitor who reached the bin dumpster estimate form.', 'steps' => 6 ],
+        'scrap_metal'   => [ 'label' => 'Scrap Metal',   'subtitle' => 'Every visitor who reached the scrap metal estimate form.', 'steps' => 4 ],
+        'vehicle_quote' => [ 'label' => 'Vehicle Quote', 'subtitle' => 'Every visitor who reached the vehicle quote form.',       'steps' => 5 ],
     ];
 }
 
-/* ── Step labels per form (for readable funnel rows) ── */
+/* ── Step labels per form ── */
 function cftg_funnel_step_labels(): array {
     return [
         'bin_estimate'  => [
-            1 => 'What to dispose',
-            2 => 'Delivery date',
-            3 => 'Rental duration',
-            4 => 'Bin size',
-            5 => 'Postal code',
-            6 => 'Contact info',
+            1 => 'What do you need to dispose?',
+            2 => 'When do you need your bin?',
+            3 => 'How long do you need the bin for?',
+            4 => 'What size do you need?',
+            5 => 'Where would you like the bin delivered?',
+            6 => 'Contact details',
         ],
         'scrap_metal'   => [
-            1 => 'Materials',
-            2 => 'Load size / weight',
+            1 => 'What do you need to scrap?',
+            2 => 'Load size / exact weight',
             3 => 'Postal code',
-            4 => 'Contact info',
+            4 => 'Contact details',
         ],
         'vehicle_quote' => [
-            1 => 'Vehicle details',
-            2 => 'Engine running?',
-            3 => 'Parts missing?',
-            4 => 'Postal code',
-            5 => 'Contact info',
+            1 => 'Vehicle Year / Make / Model',
+            2 => 'Is the engine running?',
+            3 => 'Are parts missing?',
+            4 => 'Postal code of pick-up location',
+            5 => 'Contact details',
         ],
     ];
 }
 
 function cftg_render_funnel_page(): void {
-    $forms   = cftg_funnel_meta();
-    $labels  = cftg_funnel_step_labels();
+    $forms      = cftg_funnel_meta();
+    $labels_all = cftg_funnel_step_labels();
 
     $form_filter = sanitize_key( $_GET['form_filter'] ?? '' );
     if ( $form_filter !== '' && ! isset( $forms[ $form_filter ] ) ) $form_filter = '';
@@ -51,70 +51,124 @@ function cftg_render_funnel_page(): void {
     $start_default = date( 'Y-m-d', strtotime( '-29 days', current_time( 'timestamp' ) ) );
     $start = sanitize_text_field( $_GET['start'] ?? $start_default );
     $end   = sanitize_text_field( $_GET['end']   ?? $end_default );
-
-    /* Use full-day boundaries for the BETWEEN comparison */
     $start_dt = $start . ' 00:00:00';
     $end_dt   = $end   . ' 23:59:59';
 
     $shown_forms = $form_filter ? [ $form_filter => $forms[ $form_filter ] ] : $forms;
     ?>
     <style>
-        .cftg-funnel-wrap { max-width: 1200px; }
-        .cftg-funnel-controls {
-            display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;
+        .cftg-funnel-wrap { max-width: 1180px; }
+
+        /* Controls */
+        .cftg-fnl-controls {
+            display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;
             background:#fff; border:1px solid #e5e7eb; border-radius:10px;
-            padding:14px 18px; margin:18px 0; box-shadow:0 1px 3px rgba(0,0,0,0.04);
+            padding:14px 18px; margin:18px 0 24px;
+            box-shadow:0 1px 3px rgba(0,0,0,0.04);
         }
-        .cftg-funnel-controls label {
+        .cftg-fnl-controls label {
             font-size:11px; font-weight:700; color:#6b7280;
             text-transform:uppercase; letter-spacing:0.05em;
             display:block; margin-bottom:4px;
         }
-        .cftg-funnel-controls input[type="date"],
-        .cftg-funnel-controls select {
+        .cftg-fnl-controls input[type="date"],
+        .cftg-fnl-controls select {
             height:34px; min-width:160px;
+            border:1px solid #d1d5db; border-radius:6px; padding:0 10px;
         }
-        .cftg-funnel-controls .button { height:34px; }
+        .cftg-fnl-controls .button { height:34px; }
 
-        .cftg-funnel-card {
+        /* Section */
+        .cftg-fnl-section {
             background:#fff; border:1px solid #e5e7eb; border-radius:12px;
-            padding:22px 26px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,0.04);
+            padding:24px 28px; margin-bottom:24px;
+            box-shadow:0 1px 3px rgba(0,0,0,0.04);
         }
-        .cftg-funnel-head {
-            display:flex; align-items:center; gap:14px; margin-bottom:18px;
-            padding-bottom:14px; border-bottom:1px solid #f3f4f6;
+        .cftg-fnl-section + .cftg-fnl-section {
+            border-top: 3px solid #fecaca;
         }
-        .cftg-funnel-head h2 { margin:0; font-size:18px; font-weight:800; color:#111827; }
-        .cftg-funnel-pill {
-            display:inline-block; padding:3px 12px; border-radius:12px;
-            font-size:11px; font-weight:700;
+        .cftg-fnl-title {
+            font-size:14px; font-weight:700; color:#4338ca;
+            text-transform:none; letter-spacing:0;
+            margin:0 0 4px;
+        }
+        .cftg-fnl-title.drop { color:#dc2626; }
+        .cftg-fnl-subtitle {
+            font-size:12px; color:#6b7280;
+            margin:0 0 22px;
+        }
+        .cftg-fnl-stats {
+            font-size:13px; color:#374151; font-weight:600; margin:0 0 16px;
         }
 
-        .cftg-funnel-row {
-            display:grid; grid-template-columns:200px 1fr 130px 90px;
-            align-items:center; gap:14px;
-            padding:10px 0; border-bottom:1px solid #f3f4f6;
+        /* Funnel rows */
+        .cftg-fnl-row {
+            display:grid;
+            grid-template-columns:300px 1fr 70px;
+            align-items:center;
+            gap:14px;
+            padding:6px 0;
         }
-        .cftg-funnel-row:last-child { border-bottom:none; }
-        .cftg-funnel-label { font-size:13px; font-weight:600; color:#111827; }
-        .cftg-funnel-label .num { color:#6b7280; font-weight:500; margin-left:6px; font-size:11px; }
-        .cftg-funnel-bar-wrap {
-            background:#f3f4f6; border-radius:6px; height:24px; position:relative; overflow:hidden;
+        .cftg-fnl-label {
+            font-size:12px; color:#374151; font-weight:500;
+            overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
         }
-        .cftg-funnel-bar {
-            height:100%; border-radius:6px;
-            display:flex; align-items:center; padding-left:10px;
-            color:#fff; font-size:11px; font-weight:700;
+        .cftg-fnl-bar-track {
+            background:#f3f4f6;
+            border-radius:4px;
+            height:18px;
+            overflow:hidden;
+        }
+        .cftg-fnl-bar {
+            height:100%;
+            background:#6366f1; /* indigo, like the reference */
+            border-radius:4px;
             transition:width 0.3s ease;
         }
-        .cftg-funnel-count { font-size:14px; font-weight:700; color:#111827; text-align:right; }
-        .cftg-funnel-pct { font-size:12px; font-weight:600; color:#6b7280; text-align:right; }
-
-        .cftg-funnel-empty {
-            padding:32px; text-align:center; color:#9ca3af; font-size:13px;
+        .cftg-fnl-count {
+            text-align:right;
+            font-size:13px;
+            font-weight:700;
+            color:#111827;
         }
-        .cftg-funnel-drop {
-            font-size:11px; color:#dc2626; font-weight:600; margin-left:6px;
+
+        /* Drop-off rows */
+        .cftg-fnl-drop-row {
+            display:grid;
+            grid-template-columns:300px 1fr 60px 80px;
+            align-items:center;
+            gap:14px;
+            padding:6px 0;
+        }
+        .cftg-fnl-drop-bar {
+            background:#9ca3af; /* gray for normal */
+        }
+        .cftg-fnl-drop-bar.hi { background:#dc2626; } /* red for biggest drop-off */
+        .cftg-fnl-drop-pct {
+            text-align:right;
+            font-size:12px; font-weight:700; color:#111827;
+        }
+        .cftg-fnl-drop-pct.hi { color:#dc2626; }
+        .cftg-fnl-drop-left {
+            text-align:right;
+            font-size:11px; color:#6b7280;
+        }
+        .cftg-fnl-drop-left.hi { color:#dc2626; font-weight:600; }
+
+        .cftg-fnl-empty {
+            padding:36px; text-align:center; color:#9ca3af; font-size:13px;
+        }
+
+        /* Form heading bar */
+        .cftg-fnl-formhead {
+            display:flex; align-items:center; gap:10px;
+            margin:32px 0 10px;
+        }
+        .cftg-fnl-formhead h2 {
+            margin:0; font-size:20px; font-weight:800; color:#111827;
+        }
+        .cftg-fnl-formhead .date-range {
+            margin-left:auto; font-size:12px; color:#6b7280;
         }
     </style>
 
@@ -124,10 +178,8 @@ function cftg_render_funnel_page(): void {
             Form Funnel
         </h1>
 
-        <!-- Controls -->
-        <form method="get" class="cftg-funnel-controls">
+        <form method="get" class="cftg-fnl-controls">
             <input type="hidden" name="page" value="cftg-funnel">
-
             <div>
                 <label>Form</label>
                 <select name="form_filter">
@@ -137,19 +189,15 @@ function cftg_render_funnel_page(): void {
                     <?php endforeach; ?>
                 </select>
             </div>
-
             <div>
                 <label>From</label>
                 <input type="date" name="start" value="<?php echo esc_attr( $start ); ?>">
             </div>
-
             <div>
                 <label>To</label>
                 <input type="date" name="end" value="<?php echo esc_attr( $end ); ?>">
             </div>
-
             <?php
-            /* Show landing-page filter only when a single form is selected */
             if ( $form_filter ):
                 $pages = CFTG_Funnel::distinct_pages( $form_filter, $start_dt, $end_dt );
                 if ( $pages ):
@@ -164,7 +212,6 @@ function cftg_render_funnel_page(): void {
                     </select>
                 </div>
             <?php endif; endif; ?>
-
             <button type="submit" class="button button-primary">Apply</button>
             <?php if ( $form_filter || $page_filter || $start !== $start_default || $end !== $end_default ): ?>
                 <a href="?page=cftg-funnel" class="button">Reset</a>
@@ -172,83 +219,102 @@ function cftg_render_funnel_page(): void {
         </form>
 
         <?php foreach ( $shown_forms as $ft => $meta ):
-            $summary = CFTG_Funnel::summary( $ft, $start_dt, $end_dt, $form_filter ? $page_filter : '' );
-            $views   = $summary['views'];
-            $submits = $summary['submits'];
-            $steps   = $summary['steps'];
+            $page_url_arg = $form_filter ? $page_filter : '';
+            $summary      = CFTG_Funnel::summary( $ft, $start_dt, $end_dt, $page_url_arg );
+            $drops        = CFTG_Funnel::dropoffs( $ft, $start_dt, $end_dt, $page_url_arg );
+            $views        = $summary['views'];
+            $submits      = $summary['submits'];
+            $steps        = $summary['steps'];
+            $labels       = $labels_all[ $ft ] ?? [];
+            $abandoned    = array_sum( $drops );
 
-            /* Build the funnel rows in order: view → each step → submit */
+            /* Build funnel rows in order */
             $rows = [];
-            $rows[] = [ 'key' => 'view', 'label' => 'Page / form view', 'count' => $views ];
+            $rows[] = [ 'label' => 'Visitor reached the form page',           'count' => $views ];
             for ( $i = 1; $i <= ( $meta['steps'] ?? 1 ); $i++ ) {
                 $rows[] = [
-                    'key'   => 'step_' . $i,
-                    'label' => 'Step ' . $i,
-                    'sub'   => $labels[ $ft ][ $i ] ?? '',
+                    'label' => $labels[ $i ] ?? ( 'Step ' . $i ),
                     'count' => $steps[ $i ] ?? 0,
                 ];
             }
-            $rows[] = [ 'key' => 'submit', 'label' => 'Submitted', 'count' => $submits ];
+            $rows[] = [ 'label' => 'Submitted form (became a lead)',          'count' => $submits ];
 
             $max = max( 1, $views );
+
+            /* Drop-off rows: only for steps 1..N. Highest drop = red. */
+            $drop_rows = [];
+            for ( $i = 1; $i <= ( $meta['steps'] ?? 1 ); $i++ ) {
+                $c = $drops[ $i ] ?? 0;
+                $pct = $abandoned > 0 ? round( ( $c / $abandoned ) * 100 ) : 0;
+                $drop_rows[ $i ] = [
+                    'label' => $labels[ $i ] ?? ( 'Step ' . $i ),
+                    'count' => $c,
+                    'pct'   => $pct,
+                ];
+            }
+            /* Find highest drop step (1-based) */
+            $hi_step = 0;
+            $hi_pct  = 0;
+            foreach ( $drop_rows as $i => $r ) {
+                if ( $r['pct'] > $hi_pct ) { $hi_pct = $r['pct']; $hi_step = $i; }
+            }
         ?>
-        <div class="cftg-funnel-card">
-            <div class="cftg-funnel-head">
-                <span class="cftg-funnel-pill" style="background:<?php echo esc_attr( $meta['bg'] ); ?>;color:<?php echo esc_attr( $meta['color'] ); ?>">
-                    <?php echo esc_html( $meta['label'] ); ?>
-                </span>
-                <h2><?php echo esc_html( $meta['label'] ); ?> funnel</h2>
-                <div style="margin-left:auto;color:#6b7280;font-size:12px">
-                    <?php echo esc_html( $start ); ?> → <?php echo esc_html( $end ); ?>
-                </div>
-            </div>
+
+        <div class="cftg-fnl-formhead">
+            <h2><?php echo esc_html( $meta['label'] ); ?></h2>
+            <span class="date-range"><?php echo esc_html( $start ); ?> → <?php echo esc_html( $end ); ?></span>
+        </div>
+
+        <!-- ── Funnel ── -->
+        <div class="cftg-fnl-section">
+            <h3 class="cftg-fnl-title">Funnel — Direct Visitors</h3>
+            <p class="cftg-fnl-subtitle"><?php echo esc_html( $meta['subtitle'] ); ?> Last <?php echo esc_html( (string) ( strtotime( $end ) - strtotime( $start ) ) / 86400 + 1 ); ?> days.</p>
 
             <?php if ( $views === 0 && $submits === 0 && empty( $steps ) ): ?>
-                <div class="cftg-funnel-empty">
+                <div class="cftg-fnl-empty">
                     <div style="font-size:28px;margin-bottom:6px">📊</div>
                     No tracked events for this form in the selected range yet.
                 </div>
             <?php else:
-                $prev_count = null;
                 foreach ( $rows as $r ):
-                    $count = intval( $r['count'] );
-                    $pct   = $max > 0 ? round( ( $count / $max ) * 100, 1 ) : 0;
-                    $drop  = ( $prev_count !== null && $prev_count > 0 )
-                        ? round( ( ( $prev_count - $count ) / $prev_count ) * 100, 1 ) : 0;
-                ?>
-                <div class="cftg-funnel-row">
-                    <div class="cftg-funnel-label">
-                        <?php echo esc_html( $r['label'] ); ?>
-                        <?php if ( ! empty( $r['sub'] ) ): ?>
-                            <span class="num"><?php echo esc_html( $r['sub'] ); ?></span>
-                        <?php endif; ?>
+                    $pct = $max > 0 ? round( ( intval( $r['count'] ) / $max ) * 100, 1 ) : 0;
+            ?>
+                <div class="cftg-fnl-row">
+                    <div class="cftg-fnl-label" title="<?php echo esc_attr( $r['label'] ); ?>"><?php echo esc_html( $r['label'] ); ?></div>
+                    <div class="cftg-fnl-bar-track">
+                        <div class="cftg-fnl-bar" style="width:<?php echo esc_attr( $pct ); ?>%"></div>
                     </div>
-                    <div class="cftg-funnel-bar-wrap">
-                        <div class="cftg-funnel-bar" style="width:<?php echo esc_attr( $pct ); ?>%;background:<?php echo esc_attr( $meta['color'] ); ?>">
-                            <?php echo $pct >= 8 ? esc_html( $count ) : ''; ?>
-                        </div>
-                    </div>
-                    <div class="cftg-funnel-count"><?php echo intval( $count ); ?></div>
-                    <div class="cftg-funnel-pct">
-                        <?php echo esc_html( $pct ); ?>%
-                        <?php if ( $prev_count !== null && $drop > 0 ): ?>
-                            <div class="cftg-funnel-drop">−<?php echo esc_html( $drop ); ?>%</div>
-                        <?php endif; ?>
-                    </div>
+                    <div class="cftg-fnl-count"><?php echo intval( $r['count'] ); ?></div>
                 </div>
-                <?php $prev_count = $count; endforeach; ?>
-
-                <?php
-                $conv = $views > 0 ? round( ( $submits / $views ) * 100, 1 ) : 0;
-                ?>
-                <div style="margin-top:14px;padding-top:14px;border-top:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center">
-                    <div style="font-size:12px;color:#6b7280">Overall conversion (view → submit)</div>
-                    <div style="font-size:20px;font-weight:800;color:<?php echo esc_attr( $meta['color'] ); ?>">
-                        <?php echo esc_html( $conv ); ?>%
-                    </div>
-                </div>
-            <?php endif; ?>
+            <?php endforeach; endif; ?>
         </div>
+
+        <!-- ── Drop-off Points ── -->
+        <div class="cftg-fnl-section">
+            <h3 class="cftg-fnl-title drop">Drop-off Points</h3>
+            <p class="cftg-fnl-subtitle">The last step each visitor reached before abandoning the form.</p>
+
+            <p class="cftg-fnl-stats"><?php echo intval( $abandoned ); ?> sessions left without completing.</p>
+
+            <?php if ( $abandoned === 0 ): ?>
+                <div class="cftg-fnl-empty" style="padding:18px">
+                    No abandonments recorded yet.
+                </div>
+            <?php else:
+                foreach ( $drop_rows as $i => $r ):
+                    $is_hi = ( $i === $hi_step && $r['pct'] > 0 );
+            ?>
+                <div class="cftg-fnl-drop-row">
+                    <div class="cftg-fnl-label" title="<?php echo esc_attr( $r['label'] ); ?>"><?php echo esc_html( $r['label'] ); ?></div>
+                    <div class="cftg-fnl-bar-track">
+                        <div class="cftg-fnl-bar cftg-fnl-drop-bar <?php echo $is_hi ? 'hi' : ''; ?>" style="width:<?php echo esc_attr( max( 0, $r['pct'] ) ); ?>%"></div>
+                    </div>
+                    <div class="cftg-fnl-drop-pct <?php echo $is_hi ? 'hi' : ''; ?>"><?php echo intval( $r['pct'] ); ?>%</div>
+                    <div class="cftg-fnl-drop-left <?php echo $is_hi ? 'hi' : ''; ?>"><?php echo intval( $r['count'] ); ?> left</div>
+                </div>
+            <?php endforeach; endif; ?>
+        </div>
+
         <?php endforeach; ?>
     </div>
     <?php
