@@ -133,11 +133,9 @@ function cftg_render_funnel_page(): void {
         }
         .cftg-fnl-bar {
             height:100%;
-            /* CFT brand: black → gold gradient */
-            background:linear-gradient(90deg, #0a0a0a 0%, #1f2937 30%, #eeae00 100%);
+            background:#eeae00; /* CFT brand gold */
             border-radius:4px;
             transition:width 0.3s ease;
-            box-shadow:inset 0 -1px 0 rgba(0,0,0,0.1);
         }
         .cftg-fnl-count {
             text-align:right;
