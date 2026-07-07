@@ -51,7 +51,14 @@ new CFTG_Updater( CFTG_GITHUB_REPO, __FILE__, CFTG_VERSION );
 /* ── Shortcodes ───────────────────────────────────────────── */
 add_shortcode( 'cftg_bin_estimate',  'cftg_shortcode_bin_estimate' );
 add_shortcode( 'cftg_scrap_metal',   'cftg_shortcode_scrap_metal' );
-add_shortcode( 'cftg_vehicle_quote', 'cftg_shortcode_vehicle_quote' );
+add_shortcode( 'cftg_vehicle_quote',      'cftg_shortcode_vehicle_quote' );
+add_shortcode( 'cftg_vehicle_quote_quiz', 'cftg_shortcode_vehicle_quote_quiz' );
+
+function cftg_shortcode_vehicle_quote_quiz( $atts ) {
+    ob_start();
+    include CFTG_DIR . 'templates/form-vehicle-quote-quiz.php';
+    return ob_get_clean();
+}
 
 function cftg_shortcode_bin_estimate( $atts ) {
     ob_start();
