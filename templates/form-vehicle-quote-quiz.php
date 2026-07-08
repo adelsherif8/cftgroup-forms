@@ -124,6 +124,7 @@ $uid = 'cftg-quiz-' . wp_unique_id();
           <input type="text" class="qz-input" name="postal" placeholder="K1A 0B1" required>
         </div>
         <button type="button" class="qz-next qz-btn-submit">Get My Offer</button>
+        <p class="qz-trust"><i class="fa-solid fa-lock"></i> No spam — we only use this to send your offer.</p>
         <div class="qz-error" style="display:none"></div>
       </div>
 

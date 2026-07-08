@@ -31,6 +31,7 @@
       this.total    = parseInt( wrap.dataset.total, 10 );
       this.current  = 0;
       this._seen    = new Set();
+      this._saveKey = 'cftg_quiz_' + this.formType;
 
       this.progress = wrap.querySelector( '.qz-progress' );
       this.progText = wrap.querySelector( '.qz-progress-text' );
@@ -41,9 +42,57 @@
       wrap.querySelectorAll( '.cftg-loaded-at' ).forEach( el => el.value = Math.floor( Date.now() / 1000 ) );
 
       this._bind();
-      this._show( 0 );
+      this._initPhone();
+      this._restore();
+      this._show( this.current );
       this._track( 'view', 0 );
     }
+
+    /* ── International phone field ── */
+    _initPhone() {
+      const el = this.wrap.querySelector( 'input[type="tel"]' );
+      if ( ! el || ! window.intlTelInput ) return;
+      this.iti = window.intlTelInput( el, {
+        initialCountry:     'ca',
+        preferredCountries: [ 'ca', 'us' ],
+        separateDialCode:   true,
+        utilsScript:        'https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/js/utils.js',
+      } );
+    }
+
+    /* ── Save / restore progress across page reloads ── */
+    _save() {
+      try {
+        const answers = {};
+        this.wrap.querySelectorAll( 'input, select, textarea' ).forEach( el => {
+          if ( el.name && el.value && el.type !== 'hidden' ) answers[ el.name ] = el.value;
+          else if ( el.name && el.type === 'hidden' && el.value ) answers[ el.name ] = el.value;
+        } );
+        localStorage.setItem( this._saveKey, JSON.stringify( { step: this.current, answers, ts: Date.now() } ) );
+      } catch ( e ) {}
+    }
+    _restore() {
+      let saved;
+      try { saved = JSON.parse( localStorage.getItem( this._saveKey ) || 'null' ); } catch ( e ) { saved = null; }
+      /* Expire saved progress after 24h */
+      if ( ! saved || ! saved.answers || ( Date.now() - ( saved.ts || 0 ) ) > 864e5 ) return;
+
+      Object.entries( saved.answers ).forEach( ( [ name, value ] ) => {
+        const field = this.wrap.querySelector( '[name="' + name + '"]' );
+        if ( field && field.type !== 'hidden' ) field.value = value;
+        /* Restore selected option state + hidden values */
+        this.wrap.querySelectorAll( '.qz-option[data-name="' + name + '"]' ).forEach( opt => {
+          const vals = String( value ).split( ', ' );
+          if ( vals.includes( opt.dataset.value ) ) opt.classList.add( 'selected' );
+        } );
+        if ( this.wrap.querySelector( '.qz-option[data-name="' + name + '"]' ) ) this._setHidden( name, value );
+      } );
+      /* Resume at the saved step (but never on the success screen) */
+      if ( typeof saved.step === 'number' && saved.step >= 1 && saved.step <= this.total ) {
+        this.current = saved.step;
+      }
+    }
+    _clearSave() { try { localStorage.removeItem( this._saveKey ); } catch ( e ) {} }
 
     _track( event, step ) {
       const d = new FormData();
@@ -66,6 +115,10 @@
         this.progPct.textContent  = Math.round( ( n / this.total ) * 100 ) + '%';
         this.progFill.style.width = ( n / this.total ) * 100 + '%';
         if ( ! this._seen.has( n ) ) { this._seen.add( n ); this._track( 'step', n ); }
+        this._save();
+        /* Autofocus first visible text input for faster completion */
+        const firstInput = this.wrap.querySelector( '.qz-step[data-step="' + n + '"] input:not([type=hidden]):not([type=radio])' );
+        if ( firstInput ) setTimeout( () => firstInput.focus( { preventScroll: true } ), 420 );
       } else {
         this.progress.style.display = 'none';
       }
@@ -187,7 +240,8 @@
         data.append( 'form_type', this.formType );
         this.wrap.querySelectorAll( 'input, select, textarea' ).forEach( el => {
           if ( ! el.name ) return;
-          data.set( el.name, el.value );
+          if ( el.type === 'tel' && this.iti ) { data.set( el.name, this.iti.getNumber() || el.value ); }
+          else { data.set( el.name, el.value ); }
         } );
         this._appendUtms( data );
         return fetch( cftgData.ajaxUrl, { method: 'POST', body: data } );
@@ -196,6 +250,7 @@
         .then( res => {
           if ( res.success ) {
             this._track( 'submit', 0 );
+            this._clearSave();
             this.current = this.total + 1;
             this._show( this.current );
           } else {

@@ -98,9 +98,11 @@ function cftg_enqueue_frontend() {
     wp_enqueue_script( 'cftg-forms', CFTG_URL . 'assets/js/forms.js', [], CFTG_VERSION, true );
 
     /* Quiz-style (Invisalign-inspired) assets */
-    wp_enqueue_style( 'cftg-quiz-font', 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap', [], null );
-    wp_enqueue_style( 'cftg-quiz', CFTG_URL . 'assets/css/quiz.css', [ 'cftg-fa' ], CFTG_VERSION );
-    wp_enqueue_script( 'cftg-quiz', CFTG_URL . 'assets/js/quiz.js', [], CFTG_VERSION, true );
+    wp_enqueue_style( 'cftg-quiz-font', 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap', [], null );
+    wp_enqueue_style(  'cftg-iti',  'https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/css/intlTelInput.min.css', [], '18.5.3' );
+    wp_enqueue_script( 'cftg-iti',  'https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/js/intlTelInput.min.js', [], '18.5.3', true );
+    wp_enqueue_style( 'cftg-quiz', CFTG_URL . 'assets/css/quiz.css', [ 'cftg-fa', 'cftg-iti' ], CFTG_VERSION );
+    wp_enqueue_script( 'cftg-quiz', CFTG_URL . 'assets/js/quiz.js', [ 'cftg-iti' ], CFTG_VERSION, true );
 
     wp_localize_script( 'cftg-forms', 'cftgData', [
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
