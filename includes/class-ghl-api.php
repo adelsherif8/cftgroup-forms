@@ -96,6 +96,41 @@ class CFTG_GHL_API {
         ] );
     }
 
+    /* ── Add a plain-text note to a contact ──
+       Custom fields only reach GHL once someone has created them there and
+       pasted their IDs into the plugin settings; until then they are silently
+       dropped. A note needs no mapping, so every answer is visible on the
+       contact from the first submission. */
+    public function add_note( string $contact_id, string $body ): array {
+        if ( $contact_id === '' || trim( $body ) === '' ) {
+            return [ 'success' => false, 'message' => 'No contact ID or empty note.', 'http' => 0 ];
+        }
+
+        $response = wp_remote_post(
+            $this->base . 'contacts/' . rawurlencode( $contact_id ) . '/notes',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->api_key,
+                    'Content-Type'  => 'application/json',
+                    'Version'       => $this->version,
+                ],
+                'body'    => wp_json_encode( [ 'body' => $body ] ),
+                'timeout' => 15,
+            ]
+        );
+
+        if ( is_wp_error( $response ) ) {
+            return [ 'success' => false, 'message' => $response->get_error_message(), 'http' => 0 ];
+        }
+
+        $code = wp_remote_retrieve_response_code( $response );
+        return [
+            'success' => in_array( $code, [ 200, 201 ], true ),
+            'message' => in_array( $code, [ 200, 201 ], true ) ? 'OK' : wp_remote_retrieve_body( $response ),
+            'http'    => $code,
+        ];
+    }
+
     /* ── Build custom fields array from option IDs ──
        GHL v2 contact upsert only accepts { id, value } pairs.
        If the user pasted a key (contains a dot) instead of a UUID we

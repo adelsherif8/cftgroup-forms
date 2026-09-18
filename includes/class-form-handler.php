@@ -125,11 +125,22 @@ class CFTG_Form_Handler {
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
 
+        /* Vehicle quotes: write every answer onto the contact as a note, so the
+           team sees them in GHL even for fields not yet mapped in settings.
+           A failed note never fails the submission — the contact is saved. */
+        $note_result = null;
+        if ( $type === 'vehicle_quote' && $result['success'] && ! empty( $result['contact_id'] ) ) {
+            $note_result = $ghl->add_note( $result['contact_id'], $this->vehicle_note( $this->clean( $_POST ) ) );
+        }
+
         /* Store the full GHL request + response in the entry's data so we
            can see exactly what was sent and what GHL replied with. */
         $form_data['_ghl_request']  = $result['request']  ?? '';
         $form_data['_ghl_response'] = $result['response'] ?? '';
         $form_data['_ghl_http']     = $result['http']     ?? 0;
+        if ( $note_result !== null ) {
+            $form_data['_ghl_note_http'] = $note_result['http'] ?? 0;
+        }
         global $wpdb;
         $wpdb->update(
             CFTG_Entries::table_name(),
@@ -159,7 +170,7 @@ class CFTG_Form_Handler {
         $by_type = [
             'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
             'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
-            'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','engine_running','parts_missing','whats_missing' ],
+            'vehicle_quote' => CFTG_VEHICLE_ENTRY_KEYS,
         ];
         $out = [];
         foreach ( array_merge( $by_type[ $type ] ?? [], $shared_keys ) as $k ) {
@@ -245,13 +256,19 @@ class CFTG_Form_Handler {
         $f = $this->clean( $_POST );
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
-                'cftg_cf_vehicle_year'          => $f['vehicle_year']   ?? '',
-                'cftg_cf_vehicle_make'          => $f['vehicle_make']   ?? '',
-                'cftg_cf_vehicle_model'         => $f['vehicle_model']  ?? '',
-                'cftg_cf_engine_running'        => $f['engine_running'] ?? '',
-                'cftg_cf_parts_missing'         => $f['parts_missing']  ?? '',
-                'cftg_cf_missing_parts_notes'   => $f['whats_missing']  ?? '',
-                'cftg_cf_vehicle_pickup_postal' => $f['postal']         ?? '',
+                'cftg_cf_vehicle_year'          => $f['vehicle_year']        ?? '',
+                'cftg_cf_vehicle_make'          => $f['vehicle_make']        ?? '',
+                'cftg_cf_vehicle_model'         => $f['vehicle_model']       ?? '',
+                'cftg_cf_vehicle_trim'          => $f['vehicle_trim']        ?? '',
+                'cftg_cf_engine_running'        => $f['engine_running']      ?? '',
+                'cftg_cf_catalytic_converter'   => $f['catalytic_converter'] ?? '',
+                'cftg_cf_battery'               => $f['has_battery']         ?? '',
+                'cftg_cf_vehicle_mileage'       => $f['vehicle_mileage']     ?? '',
+                'cftg_cf_parts_missing'         => $f['parts_missing']       ?? '',
+                'cftg_cf_missing_parts_notes'   => $f['whats_missing']       ?? '',
+                'cftg_cf_rim_type'              => $f['rim_type']            ?? '',
+                'cftg_cf_pickup_or_dropoff'     => $f['pickup_or_dropoff']   ?? '',
+                'cftg_cf_vehicle_pickup_postal' => $f['postal']              ?? '',
                 'cftg_cf_source_cft'            => 'Vehicle Estimate Form',
             ] ),
             $this->utm_custom_fields( $f )
@@ -261,11 +278,42 @@ class CFTG_Form_Handler {
             'lastName'     => $f['last_name']  ?? '',
             'email'        => $f['email']      ?? '',
             'phone'        => $f['phone']      ?? '',
+            /* Address uses GHL's built-in contact fields, so it lands without
+               any custom-field mapping. */
+            'address1'     => $f['address']    ?? '',
+            'city'         => $f['city']       ?? '',
             'postalCode'   => $f['postal']     ?? '',
             'tags'         => [ 'CFT - Vehicle Quote' ],
             'source'       => 'CFT Vehicle Quote Form',
             'customFields' => $custom,
         ];
+    }
+
+    /* ── Human-readable summary of a vehicle quote, for the GHL note ── */
+    private function vehicle_note( array $f ): string {
+        $v = fn( string $k ) => trim( $f[ $k ] ?? '' );
+        $vehicle = trim( implode( ' ', array_filter( [ $v( 'vehicle_year' ), $v( 'vehicle_make' ), $v( 'vehicle_model' ), $v( 'vehicle_trim' ) ] ) ) );
+        $missing = $v( 'parts_missing' );
+        if ( $missing === 'Yes' && $v( 'whats_missing' ) !== '' ) $missing .= ' — ' . $v( 'whats_missing' );
+        $mileage  = $v( 'vehicle_mileage' ) !== '' ? $v( 'vehicle_mileage' ) . ' km' : '';
+        $location = implode( ', ', array_filter( [ $v( 'address' ), $v( 'city' ), $v( 'postal' ) ] ) );
+
+        $lines = [
+            'Vehicle'             => $vehicle,
+            'Engine running'      => $v( 'engine_running' ),
+            'Catalytic converter' => $v( 'catalytic_converter' ),
+            'Battery'             => $v( 'has_battery' ),
+            'Mileage'             => $mileage,
+            'Missing parts'       => $missing,
+            'Rims'                => $v( 'rim_type' ),
+            'Pick-up or drop-off' => $v( 'pickup_or_dropoff' ),
+            'Vehicle location'    => $location,
+        ];
+        $out = [ 'Vehicle quote request' ];
+        foreach ( $lines as $label => $value ) {
+            $out[] = $label . ': ' . ( $value !== '' ? $value : '—' );
+        }
+        return implode( "\n", $out );
     }
 
     /* ── Fetch GHL custom fields (admin only) ── */

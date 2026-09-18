@@ -1,6 +1,17 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* Vehicle quote answers, in the order they are asked. Used for the saved entry
+   and for the entries screen, so the two can never list different fields. */
+if ( ! defined( 'CFTG_VEHICLE_ENTRY_KEYS' ) ) {
+    define( 'CFTG_VEHICLE_ENTRY_KEYS', [
+        'vehicle_year', 'vehicle_make', 'vehicle_model', 'vehicle_trim',
+        'engine_running', 'catalytic_converter', 'has_battery', 'vehicle_mileage',
+        'parts_missing', 'whats_missing', 'rim_type', 'pickup_or_dropoff',
+        'address', 'city',
+    ] );
+}
+
 /* ── Hex → rgba() ── */
 function cftg_hex_to_rgba( $hex, $opacity = 1.0 ) {
   $hex = ltrim( $hex, '#' );

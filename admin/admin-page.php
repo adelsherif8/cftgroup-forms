@@ -14,6 +14,8 @@ function cftg_handle_save_settings() {
     'cftg_cf_scrap_types', 'cftg_cf_load_size', 'cftg_cf_exact_weight', 'cftg_cf_scrap_postal',
     'cftg_cf_vehicle_year', 'cftg_cf_vehicle_make', 'cftg_cf_vehicle_model',
     'cftg_cf_engine_running', 'cftg_cf_parts_missing', 'cftg_cf_missing_parts_notes',
+    'cftg_cf_vehicle_trim', 'cftg_cf_catalytic_converter', 'cftg_cf_battery',
+    'cftg_cf_vehicle_mileage', 'cftg_cf_rim_type', 'cftg_cf_pickup_or_dropoff',
     'cftg_cf_bin_delivery_postal', 'cftg_cf_vehicle_pickup_postal',
     'cftg_cf_utmcampaign_custom', 'cftg_cf_utmmedium_custom', 'cftg_cf_utmcontent_custom',
     'cftg_cf_utmkeyword_custom', 'cftg_cf_utmterm_custom', 'cftg_cf_gclid_custom',
@@ -199,10 +201,16 @@ function cftg_tab_fields() { ?>
         cftg_field_row( 'cftg_cf_vehicle_year',          'Vehicle Year',                                    'TEXT', 'e.g. 2018' );
         cftg_field_row( 'cftg_cf_vehicle_make',          'Vehicle Make',                                    'TEXT', 'e.g. Honda' );
         cftg_field_row( 'cftg_cf_vehicle_model',         'Vehicle Model',                                   'TEXT', 'e.g. Civic' );
+        cftg_field_row( 'cftg_cf_vehicle_trim',          'Vehicle Trim',                                    'TEXT', 'e.g. EX, LX, Sport (optional on the form)' );
         cftg_field_row( 'cftg_cf_engine_running',        'Engine Running',                                  'TEXT', 'Yes or No' );
+        cftg_field_row( 'cftg_cf_catalytic_converter',   'Catalytic Converter',                             'TEXT', 'Yes, No or Not sure' );
+        cftg_field_row( 'cftg_cf_battery',               'Battery',                                         'TEXT', 'Yes, No or Not sure' );
+        cftg_field_row( 'cftg_cf_vehicle_mileage',       'Current Mileage',                                 'TEXT', 'Odometer reading in km, as typed' );
         cftg_field_row( 'cftg_cf_parts_missing',         'Parts Missing',                                   'TEXT', 'Yes or No' );
         cftg_field_row( 'cftg_cf_missing_parts_notes',   'Missing Parts Description',                       'TEXT', 'What is missing' );
-        cftg_field_row( 'cftg_cf_vehicle_pickup_postal', 'What is the postal code of the pick-up location?','TEXT', 'Postal code from vehicle postal step' );
+        cftg_field_row( 'cftg_cf_rim_type',              'Rim Type',                                        'TEXT', 'Steel, Aluminium or Not sure' );
+        cftg_field_row( 'cftg_cf_pickup_or_dropoff',     'Pick-up or Drop-off',                             'TEXT', '"Needs pick-up" or "Will drive to a yard"' );
+        cftg_field_row( 'cftg_cf_vehicle_pickup_postal', 'What is the postal code of the pick-up location?','TEXT', 'Postal code of the vehicle location (contact step). Street address and city go to the contact\'s built-in address fields.' );
         ?>
       </table>
     </div>
@@ -448,6 +456,7 @@ function cftg_tab_shortcodes() {
     [ 'name' => 'Bin Dumpster Estimate', 'shortcode' => '[cftg_bin_estimate]',  'badge' => 'cftg-badge-bin' ],
     [ 'name' => 'Scrap Metal Estimate',  'shortcode' => '[cftg_scrap_metal]',   'badge' => 'cftg-badge-scrap' ],
     [ 'name' => 'Vehicle Quote',         'shortcode' => '[cftg_vehicle_quote]', 'badge' => 'cftg-badge-vehicle' ],
+    [ 'name' => 'Vehicle Quote (original 5-step)', 'shortcode' => '[cftg_vehicle_quote_original]', 'badge' => 'cftg-badge-vehicle' ],
   ];
   ?>
   <div class="cftg-section">

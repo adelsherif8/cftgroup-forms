@@ -82,15 +82,21 @@ function cftg_render_instructions_page() {
                                 <tr><td><strong>Vehicle Year</strong></td><td>Text</td><td>e.g. 2018</td></tr>
                                 <tr><td><strong>Vehicle Make</strong></td><td>Text</td><td>e.g. Honda</td></tr>
                                 <tr><td><strong>Vehicle Model</strong></td><td>Text</td><td>e.g. Civic</td></tr>
+                                <tr><td><strong>Vehicle Trim</strong></td><td>Text</td><td>e.g. EX, LX, Sport — optional on the form</td></tr>
                                 <tr><td><strong>Engine Running</strong></td><td>Radio / Text</td><td>Yes or No</td></tr>
+                                <tr><td><strong>Catalytic Converter</strong></td><td>Radio / Text</td><td>Yes, No or Not sure</td></tr>
+                                <tr><td><strong>Battery</strong></td><td>Radio / Text</td><td>Yes, No or Not sure</td></tr>
+                                <tr><td><strong>Current Mileage</strong></td><td>Text</td><td>Odometer in km, as typed (e.g. 241,500)</td></tr>
                                 <tr><td><strong>Parts Missing</strong></td><td>Radio / Text</td><td>Yes or No</td></tr>
                                 <tr><td><strong>Missing Parts Description</strong></td><td>Text / Multi-line Text</td><td>Description of what is missing</td></tr>
+                                <tr><td><strong>Rim Type</strong></td><td>Radio / Text</td><td>Steel, Aluminium or Not sure</td></tr>
+                                <tr><td><strong>Pick-up or Drop-off</strong></td><td>Radio / Text</td><td>"Needs pick-up" or "Will drive to a yard"</td></tr>
                             </tbody>
                         </table>
 
                         <div class="cftg-instr-note" style="margin-top:16px">
                             <span class="dashicons dashicons-info-outline"></span>
-                            <span>Standard GHL contact fields — <strong>First Name, Last Name, Email, Phone, Postal Code</strong> — are mapped automatically. You do not need to create custom fields for these.</span>
+                            <span>Standard GHL contact fields — <strong>First Name, Last Name, Email, Phone, Street Address, City, Postal Code</strong> — are mapped automatically. You do not need to create custom fields for these. Vehicle quotes also add a note to the contact listing every answer, so nothing is missed while new fields are still being mapped.</span>
                         </div>
                     </div>
                 </section>
@@ -123,6 +129,7 @@ function cftg_render_instructions_page() {
                                 <tr><td>Bin Dumpster Estimate</td><td><code>[cftg_bin_estimate]</code></td></tr>
                                 <tr><td>Scrap Metal Estimate</td><td><code>[cftg_scrap_metal]</code></td></tr>
                                 <tr><td>Vehicle Quote</td><td><code>[cftg_vehicle_quote]</code></td></tr>
+                                <tr><td>Vehicle Quote (original 5-step, to switch back)</td><td><code>[cftg_vehicle_quote_original]</code></td></tr>
                             </tbody>
                         </table>
                         <p style="margin-top:12px">If you use the Gutenberg editor, add a <strong>Shortcode block</strong>. In Elementor, use the <strong>Shortcode widget</strong>.</p>
