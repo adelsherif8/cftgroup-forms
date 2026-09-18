@@ -100,7 +100,8 @@ class CFTG_Form_Handler {
         $payload = match ( $type ) {
             'bin_estimate'  => $this->build_bin_estimate(),
             'scrap_metal'   => $this->build_scrap_metal(),
-            'vehicle_quote' => $this->build_vehicle_quote(),
+            'vehicle_quote'    => $this->build_vehicle_quote(),
+            'vehicle_quote_v2' => $this->build_vehicle_quote( true ),
             default         => null,
         };
 
@@ -129,7 +130,7 @@ class CFTG_Form_Handler {
            team sees them in GHL even for fields not yet mapped in settings.
            A failed note never fails the submission — the contact is saved. */
         $note_result = null;
-        if ( $type === 'vehicle_quote' && $result['success'] && ! empty( $result['contact_id'] ) ) {
+        if ( $type === 'vehicle_quote_v2' && $result['success'] && ! empty( $result['contact_id'] ) ) {
             $note_result = $ghl->add_note( $result['contact_id'], $this->vehicle_note( $this->clean( $_POST ) ) );
         }
 
@@ -170,7 +171,8 @@ class CFTG_Form_Handler {
         $by_type = [
             'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
             'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
-            'vehicle_quote' => CFTG_VEHICLE_ENTRY_KEYS,
+            'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','engine_running','parts_missing','whats_missing' ],
+            'vehicle_quote_v2' => CFTG_VEHICLE_ENTRY_KEYS,
         ];
         $out = [];
         foreach ( array_merge( $by_type[ $type ] ?? [], $shared_keys ) as $k ) {
@@ -251,8 +253,11 @@ class CFTG_Form_Handler {
         ];
     }
 
-    /* ── Vehicle Quote ── */
-    private function build_vehicle_quote(): array {
+    /* ── Vehicle Quote ──
+       $v2 = the duplicate form with the extra qualifying questions
+       ([cftg_vehicle_quote_v2]). The original form doesn't ask for an address,
+       so it must not send empty address fields that would wipe the contact's. */
+    private function build_vehicle_quote( bool $v2 = false ): array {
         $f = $this->clean( $_POST );
         $custom = array_merge(
             CFTG_GHL_API::build_custom_fields( [
@@ -273,20 +278,23 @@ class CFTG_Form_Handler {
             ] ),
             $this->utm_custom_fields( $f )
         );
-        return [
+        $payload = [
             'firstName'    => $f['first_name'] ?? '',
             'lastName'     => $f['last_name']  ?? '',
             'email'        => $f['email']      ?? '',
             'phone'        => $f['phone']      ?? '',
-            /* Address uses GHL's built-in contact fields, so it lands without
-               any custom-field mapping. */
-            'address1'     => $f['address']    ?? '',
-            'city'         => $f['city']       ?? '',
             'postalCode'   => $f['postal']     ?? '',
             'tags'         => [ 'CFT - Vehicle Quote' ],
             'source'       => 'CFT Vehicle Quote Form',
             'customFields' => $custom,
         ];
+        if ( $v2 ) {
+            /* Address uses GHL's built-in contact fields, so it lands without
+               any custom-field mapping. */
+            $payload['address1'] = $f['address'] ?? '';
+            $payload['city']     = $f['city']    ?? '';
+        }
+        return $payload;
     }
 
     /* ── Human-readable summary of a vehicle quote, for the GHL note ── */

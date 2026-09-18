@@ -456,7 +456,7 @@ function cftg_tab_shortcodes() {
     [ 'name' => 'Bin Dumpster Estimate', 'shortcode' => '[cftg_bin_estimate]',  'badge' => 'cftg-badge-bin' ],
     [ 'name' => 'Scrap Metal Estimate',  'shortcode' => '[cftg_scrap_metal]',   'badge' => 'cftg-badge-scrap' ],
     [ 'name' => 'Vehicle Quote',         'shortcode' => '[cftg_vehicle_quote]', 'badge' => 'cftg-badge-vehicle' ],
-    [ 'name' => 'Vehicle Quote (original 5-step)', 'shortcode' => '[cftg_vehicle_quote_original]', 'badge' => 'cftg-badge-vehicle' ],
+    [ 'name' => 'Vehicle Quote (new, extra questions)', 'shortcode' => '[cftg_vehicle_quote_v2]', 'badge' => 'cftg-badge-vehicle' ],
   ];
   ?>
   <div class="cftg-section">

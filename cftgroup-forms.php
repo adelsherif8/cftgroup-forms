@@ -52,8 +52,8 @@ new CFTG_Updater( CFTG_GITHUB_REPO, __FILE__, CFTG_VERSION );
 add_shortcode( 'cftg_bin_estimate',  'cftg_shortcode_bin_estimate' );
 add_shortcode( 'cftg_scrap_metal',   'cftg_shortcode_scrap_metal' );
 add_shortcode( 'cftg_vehicle_quote',      'cftg_shortcode_vehicle_quote' );
-/* Original 5-step vehicle form, kept for switching back */
-add_shortcode( 'cftg_vehicle_quote_original', 'cftg_shortcode_vehicle_quote_original' );
+/* Duplicate vehicle form with extra qualifying questions (not on the live page) */
+add_shortcode( 'cftg_vehicle_quote_v2',   'cftg_shortcode_vehicle_quote_v2' );
 /* Quiz-style previews (Invisalign-inspired) */
 add_shortcode( 'cftg_vehicle_quote_quiz', 'cftg_shortcode_vehicle_quote_quiz' );
 add_shortcode( 'cftg_bin_estimate_quiz',  'cftg_shortcode_bin_estimate_quiz' );
@@ -90,9 +90,9 @@ function cftg_shortcode_vehicle_quote( $atts ) {
     include CFTG_DIR . 'templates/form-vehicle-quote.php';
     return ob_get_clean();
 }
-function cftg_shortcode_vehicle_quote_original( $atts ) {
+function cftg_shortcode_vehicle_quote_v2( $atts ) {
     ob_start();
-    include CFTG_DIR . 'templates/form-vehicle-quote-original.php';
+    include CFTG_DIR . 'templates/form-vehicle-quote-v2.php';
     return ob_get_clean();
 }
 

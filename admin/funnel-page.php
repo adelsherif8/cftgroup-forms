@@ -6,7 +6,8 @@ function cftg_funnel_meta(): array {
     return [
         'bin_estimate'  => [ 'label' => 'Bin Estimate',  'subtitle' => 'Every visitor who reached the bin dumpster estimate form.', 'steps' => 6 ],
         'scrap_metal'   => [ 'label' => 'Scrap Metal',   'subtitle' => 'Every visitor who reached the scrap metal estimate form.', 'steps' => 4 ],
-        'vehicle_quote' => [ 'label' => 'Vehicle Quote', 'subtitle' => 'Every visitor who reached the vehicle quote form.',       'steps' => 9 ],
+        'vehicle_quote' => [ 'label' => 'Vehicle Quote', 'subtitle' => 'Every visitor who reached the vehicle quote form.',       'steps' => 5 ],
+        'vehicle_quote_v2' => [ 'label' => 'Vehicle Quote (new)', 'subtitle' => 'Every visitor who reached the new vehicle quote form (extra qualifying questions).', 'steps' => 9 ],
     ];
 }
 
@@ -28,6 +29,13 @@ function cftg_funnel_step_labels(): array {
             4 => 'Contact details',
         ],
         'vehicle_quote' => [
+            1 => 'Vehicle Year / Make / Model',
+            2 => 'Is the engine running?',
+            3 => 'Are parts missing?',
+            4 => 'Postal code of pick-up location',
+            5 => 'Contact details',
+        ],
+        'vehicle_quote_v2' => [
             1 => 'Vehicle Year / Make / Model / Trim',
             2 => 'Is the engine running?',
             3 => 'Catalytic converter?',

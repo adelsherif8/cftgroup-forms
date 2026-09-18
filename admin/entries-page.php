@@ -54,6 +54,7 @@ function cftg_form_meta(): array {
         'bin_estimate'  => [ 'label' => 'Bin Estimate',  'color' => '#0ea5e9', 'bg' => '#e0f2fe' ],
         'scrap_metal'   => [ 'label' => 'Scrap Metal',   'color' => '#f59e0b', 'bg' => '#fef3c7' ],
         'vehicle_quote' => [ 'label' => 'Vehicle Quote', 'color' => '#10b981', 'bg' => '#d1fae5' ],
+        'vehicle_quote_v2' => [ 'label' => 'Vehicle Quote (new)', 'color' => '#10b981', 'bg' => '#d1fae5' ],
     ];
 }
 
@@ -418,7 +419,8 @@ function cftg_render_entry_detail( array $entry ): void {
             $form_keys = [
                 'bin_estimate'  => [ 'dispose_types','delivery_date','bin_duration','bin_size' ],
                 'scrap_metal'   => [ 'scrap_types','load_size','exact_weight','exact_weight_unit' ],
-                'vehicle_quote' => CFTG_VEHICLE_ENTRY_KEYS,
+                'vehicle_quote' => [ 'vehicle_year','vehicle_make','vehicle_model','engine_running','parts_missing','whats_missing' ],
+                'vehicle_quote_v2' => CFTG_VEHICLE_ENTRY_KEYS,
             ];
             $keys = $form_keys[ $entry['form_type'] ] ?? [];
             $has_form_data = false;

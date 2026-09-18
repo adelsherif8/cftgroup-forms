@@ -129,7 +129,7 @@ function cftg_render_instructions_page() {
                                 <tr><td>Bin Dumpster Estimate</td><td><code>[cftg_bin_estimate]</code></td></tr>
                                 <tr><td>Scrap Metal Estimate</td><td><code>[cftg_scrap_metal]</code></td></tr>
                                 <tr><td>Vehicle Quote</td><td><code>[cftg_vehicle_quote]</code></td></tr>
-                                <tr><td>Vehicle Quote (original 5-step, to switch back)</td><td><code>[cftg_vehicle_quote_original]</code></td></tr>
+                                <tr><td>Vehicle Quote (new, extra qualifying questions)</td><td><code>[cftg_vehicle_quote_v2]</code></td></tr>
                             </tbody>
                         </table>
                         <p style="margin-top:12px">If you use the Gutenberg editor, add a <strong>Shortcode block</strong>. In Elementor, use the <strong>Shortcode widget</strong>.</p>
