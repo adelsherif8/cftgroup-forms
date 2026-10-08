@@ -144,23 +144,24 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(238,174,0,.15);
-  border: 1px solid var(--cftg-gold-border);
+  background: var(--cftg-gold);
+  border: 1px solid var(--cftg-gold);
   border-radius: 99px;
-  padding: 7px 18px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--cftg-gold);
+  padding: 9px 20px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #111;
+  text-shadow: none;
   letter-spacing: .06em;
   width: fit-content;
 }
-.cftg-badge i { font-size: 13px; }
+.cftg-badge i { font-size: 14px; }
 
 /* Title */
 .cftg-title {
-  font-size: clamp(30px, 3.8vw, 50px);
+  font-size: clamp(40px, 4.4vw, 58px) !important;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.1 !important;
   letter-spacing: -.03em;
   color: #fff;
 }
@@ -209,10 +210,6 @@
 }
 a.cftg-contact-item:hover { color: var(--cftg-gold); }
 .cftg-contact-item i { font-size: 11px; color: var(--cftg-gold); }
-
-/* Logo on left — height is set inline from admin design panel */
-.cftg-left .cftg-logo { margin-bottom: 8px; }
-.cftg-left .cftg-logo img { width: auto; object-fit: contain; }
 
 /* Scrap metal price-list helper link under the materials grid */
 .cftg-price-list-link {
@@ -586,14 +583,15 @@ input[type="date"].cftg-input::-webkit-calendar-picker-indicator { cursor: point
   }
   .cftg-left {
     display: flex !important;
-    padding: 28px 20px 24px !important;
-    gap: 14px !important;
+    padding: 18px 20px 24px !important;
+    gap: 12px !important;
     text-shadow: 0 1px 6px rgba(0,0,0,0.7), 0 2px 16px rgba(0,0,0,0.5) !important;
   }
   .cftg-left .cftg-feat-grid,
   .cftg-left .cftg-contact-row { display: none !important; }
-  .cftg-left .cftg-title { font-size: clamp(20px, 5vw, 28px) !important; }
-  .cftg-left .cftg-desc  { font-size: 13px !important; }
+  .cftg-left .cftg-title { font-size: clamp(30px, 8.6vw, 38px) !important; }
+  .cftg-left .cftg-desc  { font-size: 15px !important; line-height: 1.5 !important; }
+  .cftg-left .cftg-badge { font-size: 13px; padding: 7px 16px; }
   .cftg-card {
     margin: -16px 14px 0 !important;
     border-radius: 16px !important;

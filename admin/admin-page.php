@@ -36,7 +36,6 @@ function cftg_handle_save_settings() {
         'overlay_color_r'      => sanitize_hex_color( $v['overlay_color_r'] ?? '#0f1520' ) ?: '#0f1520',
         'overlay_opacity'      => max( 0, min( 100, intval( $v['overlay_opacity'] ?? 75 ) ) ),
         'accent_color'         => sanitize_hex_color( $v['accent_color'] ?? '#eeae00' ) ?: '#eeae00',
-        'logo_size'            => max( 24, min( 200, intval( $v['logo_size'] ?? 80 ) ) ),
         'badge'                => sanitize_text_field( $v['badge'] ?? '' ),
         'title'                => sanitize_text_field( $v['title'] ?? '' ),
         'title_accent'         => sanitize_text_field( $v['title_accent'] ?? '' ),
@@ -46,7 +45,6 @@ function cftg_handle_save_settings() {
         'feat_3'               => sanitize_text_field( $v['feat_3'] ?? '' ),
         'feat_4'               => sanitize_text_field( $v['feat_4'] ?? '' ),
         'phone'                => sanitize_text_field( $v['phone'] ?? '' ),
-        'email'                => sanitize_email( $v['email'] ?? '' ),
         'hours'                => sanitize_text_field( $v['hours'] ?? '' ),
         'scrap_price_list_url' => esc_url_raw( $v['scrap_price_list_url'] ?? '' ),
       ] );
@@ -341,20 +339,6 @@ function cftg_design_form_panel( $ft, $label ) {
       </div>
     </div>
 
-    <!-- Logo size -->
-    <div class="cftg-design-row">
-      <div class="cftg-design-label">
-        <strong>Logo Size</strong>
-        <span>Height of the logo image in pixels (24–200)</span>
-      </div>
-      <div class="cftg-design-control">
-        <input type="number" min="24" max="200" step="1"
-               name="<?php echo $n; ?>[logo_size]"
-               value="<?php echo intval( $d['logo_size'] ?? 80 ); ?>"
-               class="small-text"> px
-      </div>
-    </div>
-
     <?php if ( $ft === 'scrap_metal' ): ?>
     <!-- Scrap price list URL -->
     <div class="cftg-design-row">
@@ -434,10 +418,6 @@ function cftg_design_form_panel( $ft, $label ) {
         <div>
           <label>Phone</label>
           <input type="text" name="<?php echo $n; ?>[phone]" value="<?php echo esc_attr( $d['phone'] ); ?>" class="regular-text" placeholder="613-831-2900">
-        </div>
-        <div>
-          <label>Email</label>
-          <input type="email" name="<?php echo $n; ?>[email]" value="<?php echo esc_attr( $d['email'] ?? 'info@cftgroup.ca' ); ?>" class="regular-text" placeholder="info@cftgroup.ca">
         </div>
         <div>
           <label>Hours</label>

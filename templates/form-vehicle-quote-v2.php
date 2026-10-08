@@ -10,9 +10,6 @@ $styles = cftg_section_styles( 'vehicle_quote' );
 
     <!-- ── Left panel ── -->
     <div class="cftg-left">
-      <div class="cftg-logo">
-        <img src="https://cftgroup.ca/wp-content/uploads/2024/09/cft-group-logo.png" alt="CFT Group" style="height:<?php echo intval( $d['logo_size'] ?? 80 ); ?>px">
-      </div>
       <div class="cftg-badge"><i class="fa-solid fa-tag"></i> <?php echo esc_html( $d['badge'] ); ?></div>
       <h2 class="cftg-title"><?php echo esc_html( $d['title'] ); ?> <span class="cftg-accent"><?php echo esc_html( $d['title_accent'] ); ?></span></h2>
       <p class="cftg-desc"><?php echo esc_html( $d['desc'] ); ?></p>
@@ -24,7 +21,6 @@ $styles = cftg_section_styles( 'vehicle_quote' );
       </div>
       <div class="cftg-contact-row">
         <a class="cftg-contact-item" href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $d['phone'] ) ); ?>"><i class="fa-solid fa-phone"></i> <?php echo esc_html( $d['phone'] ); ?></a>
-        <a class="cftg-contact-item" href="mailto:<?php echo esc_attr( $d['email'] ?? 'info@cftgroup.ca' ); ?>"><i class="fa-solid fa-envelope"></i> <?php echo esc_html( $d['email'] ?? 'info@cftgroup.ca' ); ?></a>
         <div class="cftg-contact-item"><i class="fa-solid fa-clock"></i> <?php echo esc_html( $d['hours'] ); ?></div>
       </div>
     </div>
