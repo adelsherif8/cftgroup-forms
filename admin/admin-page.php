@@ -421,7 +421,7 @@ function cftg_design_form_panel( $ft, $label ) {
         </div>
         <div>
           <label>Hours</label>
-          <input type="text" name="<?php echo $n; ?>[hours]" value="<?php echo esc_attr( $d['hours'] ); ?>" class="regular-text" placeholder="Mon–Fri 8am–6pm">
+          <input type="text" name="<?php echo $n; ?>[hours]" value="<?php echo esc_attr( $d['hours'] ); ?>" class="regular-text" placeholder="Mon–Fri 8am–4pm">
         </div>
       </div>
     </div>

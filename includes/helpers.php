@@ -54,7 +54,7 @@ function cftg_design_defaults( $form_type ) {
       'feat_3'          => 'Cash on the spot',
       'feat_4'          => 'Zero paperwork',
       'phone'           => '613-831-2900',
-      'hours'           => 'Mon–Fri 8am–6pm',
+      'hours'           => 'Mon–Fri 8am–4pm',
     ],
     'scrap_metal' => [
       'bg_image'             => '',
@@ -71,7 +71,7 @@ function cftg_design_defaults( $form_type ) {
       'feat_3'               => 'Cash on the spot',
       'feat_4'               => 'All metals accepted',
       'phone'                => '613-831-2900',
-      'hours'                => 'Mon–Fri 8am–6pm',
+      'hours'                => 'Mon–Fri 8am–4pm',
       'scrap_price_list_url' => '',
     ],
     'bin_estimate' => [
@@ -89,13 +89,26 @@ function cftg_design_defaults( $form_type ) {
       'feat_3'          => 'Eco-responsible disposal',
       'feat_4'          => 'Commercial & residential',
       'phone'           => '613-831-2900',
-      'hours'           => 'Mon–Fri 8am–6pm',
+      'hours'           => 'Mon–Fri 8am–4pm',
     ],
   ];
   return $all[ $form_type ] ?? [];
 }
 
 /* ── Get merged design (saved + defaults) ── */
+/* One-time: move forms still showing the old 8am–6pm hours to the new 8am–4pm. */
+add_action( 'init', function () {
+  if ( get_option( 'cftg_hours_8to4' ) ) return;
+  foreach ( [ 'vehicle_quote', 'vehicle_quote_v2', 'scrap_metal', 'bin_estimate' ] as $ft ) {
+    $saved = get_option( "cftg_design_{$ft}" );
+    if ( is_array( $saved ) && isset( $saved['hours'] ) && stripslashes( $saved['hours'] ) === 'Mon–Fri 8am–6pm' ) {
+      $saved['hours'] = 'Mon–Fri 8am–4pm';
+      update_option( "cftg_design_{$ft}", $saved );
+    }
+  }
+  update_option( 'cftg_hours_8to4', 1 );
+} );
+
 function cftg_get_design( $form_type ) {
   $saved = get_option( "cftg_design_{$form_type}", [] );
   $merged = wp_parse_args( $saved, cftg_design_defaults( $form_type ) );
