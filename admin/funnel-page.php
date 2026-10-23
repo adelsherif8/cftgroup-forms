@@ -128,14 +128,25 @@ function cftg_render_funnel_page(): void {
         /* Funnel rows */
         .cftg-fnl-row {
             display:grid;
-            grid-template-columns:300px 1fr 70px;
+            grid-template-columns:300px 1fr 70px 60px;
             align-items:center;
             gap:14px;
             padding:6px 0;
         }
         .cftg-fnl-label {
             font-size:12px; color:#374151; font-weight:500;
-            overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+        }
+        .cftg-fnl-row .cftg-fnl-label small {
+            display:block; font-size:11px; font-weight:400; color:#9ca3af; margin-top:1px;
+        }
+        .cftg-fnl-row .cftg-fnl-label small .lost { color:#dc2626; font-weight:600; }
+        .cftg-fnl-worst {
+            display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px;
+            background:#fee2e2; color:#b91c1c; font-size:9.5px; font-weight:700;
+            text-transform:uppercase; letter-spacing:.04em; vertical-align:1px;
+        }
+        .cftg-fnl-share {
+            text-align:right; font-size:12px; font-weight:600; color:#6b7280;
         }
         .cftg-fnl-bar-track {
             background:#f3f4f6;
@@ -301,17 +312,47 @@ function cftg_render_funnel_page(): void {
                     No tracked events for this form in the selected range yet.
                 </div>
             <?php else:
-                foreach ( $rows as $r ):
+                /* Step-to-step conversion: the share of the previous step that
+                   carried on, and how many were lost there. The biggest single
+                   loss is flagged — that is the step worth rewriting. */
+                $top = intval( $rows[0]['count'] ?? 0 );
+                $worst_row = -1; $worst_lost = 0;
+                foreach ( $rows as $i => $r ) {
+                    $cnt  = intval( $r['count'] );
+                    $prev = $i === 0 ? $cnt : intval( $rows[ $i - 1 ]['count'] );
+                    $rows[ $i ]['of_prev'] = $prev > 0 ? round( $cnt / $prev * 100 ) : 0;
+                    $rows[ $i ]['of_top']  = $top  > 0 ? round( $cnt / $top  * 100 ) : 0;
+                    $rows[ $i ]['lost']    = $i === 0 ? 0 : max( 0, $prev - $cnt );
+                    if ( $i > 0 && $rows[ $i ]['lost'] > $worst_lost ) {
+                        $worst_lost = $rows[ $i ]['lost'];
+                        $worst_row  = $i;
+                    }
+                }
+                foreach ( $rows as $i => $r ):
                     $pct = $max > 0 ? round( ( intval( $r['count'] ) / $max ) * 100, 1 ) : 0;
             ?>
                 <div class="cftg-fnl-row">
-                    <div class="cftg-fnl-label" title="<?php echo esc_attr( $r['label'] ); ?>"><?php echo esc_html( $r['label'] ); ?></div>
+                    <div class="cftg-fnl-label">
+                        <?php echo esc_html( $r['label'] ); ?>
+                        <?php if ( $i === $worst_row ): ?><span class="cftg-fnl-worst">biggest drop-off</span><?php endif; ?>
+                        <?php if ( $i > 0 ): ?>
+                            <small>
+                                <?php echo intval( $r['of_prev'] ); ?>% carried on from the step above<?php
+                                if ( $r['lost'] > 0 ) : ?> &middot; <span class="lost">&minus;<?php echo intval( $r['lost'] ); ?> left here</span><?php endif; ?>
+                            </small>
+                        <?php endif; ?>
+                    </div>
                     <div class="cftg-fnl-bar-track">
                         <div class="cftg-fnl-bar" style="width:<?php echo esc_attr( $pct ); ?>%"></div>
                     </div>
                     <div class="cftg-fnl-count"><?php echo intval( $r['count'] ); ?></div>
+                    <div class="cftg-fnl-share"><?php echo intval( $r['of_top'] ); ?>%</div>
                 </div>
-            <?php endforeach; endif; ?>
+            <?php endforeach; ?>
+                <p class="cftg-fnl-subtitle" style="margin-top:10px">
+                    The right-hand figure is the share of everyone who reached the page. The grey line under each step is how many of the previous step carried on.
+                </p>
+            <?php endif; ?>
         </div>
 
         <!-- ── Drop-off Points ── -->
