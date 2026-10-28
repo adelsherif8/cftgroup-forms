@@ -236,7 +236,7 @@ function cftg_render_entries_list(): void {
                         <td style="color:#6b7280"><?php echo esc_html( $r['phone'] ) ?: '—'; ?></td>
                         <td>
                             <?php if ( $r['ghl_status'] === 'sent' ): ?>
-                                <span class="cftg-ghl-badge cftg-ghl-sent">● Sent</span>
+                                <span class="cftg-ghl-badge cftg-ghl-sent" title="<?php echo esc_attr( $r['ghl_message'] ); ?>">● Sent<?php echo $r['ghl_message'] === 'Updated existing contact' ? ' (existing contact)' : ''; ?></span>
                             <?php elseif ( $r['ghl_status'] === 'failed' ): ?>
                                 <span class="cftg-ghl-badge cftg-ghl-failed" title="<?php echo esc_attr( $r['ghl_message'] ); ?>">● Failed</span>
                             <?php else: ?>
@@ -496,7 +496,9 @@ function cftg_render_entry_detail( array $entry ): void {
                         <span class="icon">✓</span>
                         <div class="info">
                             <strong>Sent successfully</strong>
-                            Contact created or updated in GoHighLevel.
+                            <?php echo $entry['ghl_message'] === 'Updated existing contact'
+                                ? 'Matched an existing contact (same email or phone) and updated it. GHL does not treat this as a new contact.'
+                                : ( $entry['ghl_message'] === 'Created new contact' ? 'New contact created in GoHighLevel.' : 'Contact created or updated in GoHighLevel.' ); ?>
                         </div>
                     </div>
                 <?php elseif ( $entry['ghl_status'] === 'failed' ): ?>

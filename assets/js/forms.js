@@ -118,6 +118,16 @@
         }
       }
 
+      /* GHL rejects the whole lead if the email isn't a real address */
+      for ( const inp of step.querySelectorAll( 'input[type="email"]' ) ) {
+        if ( inp.offsetParent === null || ! inp.value.trim() ) continue;
+        if ( ! /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test( inp.value.trim() ) ) {
+          this._showError( 'Please enter a valid email address, like name@example.com.' );
+          inp.focus();
+          return false;
+        }
+      }
+
       /* Required radio groups (at least one option must be selected) */
       const radios = step.querySelectorAll( 'input[type="radio"]' );
       const radioNames = new Set();

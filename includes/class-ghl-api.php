@@ -85,7 +85,9 @@ class CFTG_GHL_API {
             return array_merge( $base_return, [
                 'success'    => true,
                 'contact_id' => $body['contact']['id'] ?? '',
-                'message'    => 'OK',
+                /* Upsert matches on email/phone: an existing contact is updated
+                   in place, which does not fire "contact created" workflows. */
+                'message'    => empty( $body['new'] ) ? 'Updated existing contact' : 'Created new contact',
             ] );
         }
 

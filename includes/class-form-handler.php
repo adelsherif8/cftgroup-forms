@@ -123,6 +123,13 @@ class CFTG_Form_Handler {
             'ip'         => $this->get_ip(),
         ] );
 
+        /* An invalid email makes GHL reject the whole contact. Send the lead
+           without it (matched by phone) rather than lose it; the entry keeps
+           what was typed. */
+        if ( ! empty( $payload['email'] ) && ! is_email( $payload['email'] ) ) {
+            unset( $payload['email'] );
+        }
+
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
 
