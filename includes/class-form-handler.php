@@ -133,6 +133,12 @@ class CFTG_Form_Handler {
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
 
+        /* Returning contact: re-add the form tag so "tag added" workflows fire */
+        $retag_result = null;
+        if ( $result['success'] && empty( $result['is_new'] ) && ! empty( $result['contact_id'] ) && ! empty( $payload['tags'] ) ) {
+            $retag_result = $ghl->retag( $result['contact_id'], $payload['tags'] );
+        }
+
         /* Vehicle quotes: write every answer onto the contact as a note, so the
            team sees them in GHL even for fields not yet mapped in settings.
            A failed note never fails the submission — the contact is saved. */
@@ -146,6 +152,9 @@ class CFTG_Form_Handler {
         $form_data['_ghl_request']  = $result['request']  ?? '';
         $form_data['_ghl_response'] = $result['response'] ?? '';
         $form_data['_ghl_http']     = $result['http']     ?? 0;
+        if ( $retag_result !== null ) {
+            $form_data['_ghl_retag_http'] = $retag_result['http'];
+        }
         if ( $note_result !== null ) {
             $form_data['_ghl_note_http'] = $note_result['http'] ?? 0;
         }

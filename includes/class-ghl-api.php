@@ -85,6 +85,7 @@ class CFTG_GHL_API {
             return array_merge( $base_return, [
                 'success'    => true,
                 'contact_id' => $body['contact']['id'] ?? '',
+                'is_new'     => ! empty( $body['new'] ),
                 /* Upsert matches on email/phone: an existing contact is updated
                    in place, which does not fire "contact created" workflows. */
                 'message'    => empty( $body['new'] ) ? 'Updated existing contact' : 'Created new contact',
@@ -96,6 +97,29 @@ class CFTG_GHL_API {
             'success' => false,
             'message' => "GHL error ({$code}): {$err}",
         ] );
+    }
+
+    /* ── Remove then re-add tags on an existing contact ──
+       GHL lead workflows trigger on "tag added". A returning contact already
+       has the form tag, so without this their new submission notifies nobody. */
+    public function retag( string $contact_id, array $tags ): array {
+        if ( $contact_id === '' || ! $tags ) {
+            return [ 'success' => false, 'http' => 0 ];
+        }
+        $url  = $this->base . 'contacts/' . rawurlencode( $contact_id ) . '/tags';
+        $args = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->api_key,
+                'Content-Type'  => 'application/json',
+                'Version'       => $this->version,
+            ],
+            'body'    => wp_json_encode( [ 'tags' => array_values( $tags ) ] ),
+            'timeout' => 15,
+        ];
+        wp_remote_request( $url, $args + [ 'method' => 'DELETE' ] );
+        $response = wp_remote_post( $url, $args );
+        $code     = is_wp_error( $response ) ? 0 : wp_remote_retrieve_response_code( $response );
+        return [ 'success' => in_array( $code, [ 200, 201 ], true ), 'http' => $code ];
     }
 
     /* ── Add a plain-text note to a contact ──
