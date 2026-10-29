@@ -133,6 +133,13 @@ class CFTG_Form_Handler {
         $ghl    = new CFTG_GHL_API();
         $result = $ghl->upsert_contact( $payload );
 
+        /* Same for a phone GHL can't parse: resend without it (matched by email). */
+        if ( ! $result['success'] && ! empty( $payload['phone'] ) && ! empty( $payload['email'] )
+             && stripos( $result['message'] ?? '', 'phone' ) !== false ) {
+            unset( $payload['phone'] );
+            $result = $ghl->upsert_contact( $payload );
+        }
+
         /* Returning contact: re-add the form tag so "tag added" workflows fire */
         $retag_result = null;
         if ( $result['success'] && empty( $result['is_new'] ) && ! empty( $result['contact_id'] ) && ! empty( $payload['tags'] ) ) {

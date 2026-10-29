@@ -118,6 +118,17 @@
         }
       }
 
+      /* GHL rejects the whole lead if the phone isn't a real number */
+      for ( const inp of step.querySelectorAll( 'input[name="phone"]' ) ) {
+        if ( inp.offsetParent === null || ! inp.value.trim() ) continue;
+        const digits = inp.value.replace( /\D/g, '' );
+        if ( digits.length < 10 || digits.length > 15 ) {
+          this._showError( 'Please enter a valid phone number, like 613-555-0123.' );
+          inp.focus();
+          return false;
+        }
+      }
+
       /* GHL rejects the whole lead if the email isn't a real address */
       for ( const inp of step.querySelectorAll( 'input[type="email"]' ) ) {
         if ( inp.offsetParent === null || ! inp.value.trim() ) continue;
