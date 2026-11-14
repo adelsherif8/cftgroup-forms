@@ -7,6 +7,15 @@ class CFTG_Funnel {
        this re-runs dbDelta on upgrade, so existing sites get the column
        without reactivating the plugin. */
     const DB_VERSION = '1.1';
+
+    /* Events older than this are deleted. 18 months, not 12, so a full
+       365-day lookback never loses its oldest edge and a year-over-year
+       comparison stays possible. */
+    const KEEP_MONTHS = 18;
+    /* Deleted a slice at a time: this runs on shared hosting, where one big
+       DELETE over a long table risks a lock or a timeout. */
+    const PRUNE_BATCH       = 2000;
+    const PRUNE_MAX_BATCHES = 5;
     const OPTION_KEY = 'cftg_funnel_db_version';
 
     public static function table_name(): string {
@@ -73,8 +82,13 @@ class CFTG_Funnel {
             'step_num'   => $step_num,
             'page_id'    => $page_id,
             'page_url'   => substr( $page_url, 0, 500 ),
-            'ip'         => substr( $ip, 0, 45 ),
-            'ua'         => substr( $ua, 0, 255 ),
+            /* IP and user agent are deliberately not stored. Nothing in the
+               plugin ever read them, so they were personal data collected for
+               no purpose. The columns stay for now so no migration is needed;
+               $ip and $ua are accepted and ignored. Submissions still record
+               an IP in the entries table, where spam and fraud checks use it. */
+            'ip'         => '',
+            'ua'         => '',
             'created_at' => current_time( 'mysql' ),
         ], [ '%s','%s','%s','%d','%d','%s','%s','%s','%s' ] );
     }
@@ -137,6 +151,45 @@ class CFTG_Funnel {
         $where = $wpdb->prepare( "form_type=%s AND created_at BETWEEN %s AND %s", $form_type, $start, $end );
         if ( $page_url !== '' ) $where .= $wpdb->prepare( ' AND page_url=%s', $page_url );
         return (int) $wpdb->get_var( "SELECT COUNT(DISTINCT session_id) FROM $table WHERE $where AND event='start'" );
+    }
+
+    /* ── Retention ──
+       Deletes events past KEEP_MONTHS, oldest first, a batch at a time. Runs
+       daily on WP-Cron; whatever is left over is picked up tomorrow. Returns
+       how many rows went. ── */
+    public static function prune_old_events(): int {
+        global $wpdb;
+        $table  = self::table_name();
+        $cutoff = date( 'Y-m-d H:i:s', strtotime( '-' . self::KEEP_MONTHS . ' months', current_time( 'timestamp' ) ) );
+        $gone   = 0;
+
+        for ( $i = 0; $i < self::PRUNE_MAX_BATCHES; $i++ ) {
+            /* Select then delete by id: portable, and it never locks more than
+               the batch. DELETE ... ORDER BY ... LIMIT is MySQL-only. */
+            $ids = $wpdb->get_col( $wpdb->prepare(
+                "SELECT id FROM $table WHERE created_at < %s ORDER BY id ASC LIMIT %d",
+                $cutoff, self::PRUNE_BATCH
+            ) );
+            if ( empty( $ids ) ) break;
+
+            $ids = array_map( 'intval', $ids );
+            $wpdb->query( "DELETE FROM $table WHERE id IN (" . implode( ',', $ids ) . ")" );
+            $gone += count( $ids );
+
+            if ( count( $ids ) < self::PRUNE_BATCH ) break;
+        }
+        return $gone;
+    }
+
+    /* Daily prune, scheduled once and left alone. */
+    public static function schedule_prune(): void {
+        if ( ! wp_next_scheduled( 'cftg_funnel_prune' ) ) {
+            wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'cftg_funnel_prune' );
+        }
+    }
+
+    public static function unschedule_prune(): void {
+        wp_clear_scheduled_hook( 'cftg_funnel_prune' );
     }
 
     /* ── Phone clicks ──

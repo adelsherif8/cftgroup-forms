@@ -37,6 +37,12 @@ register_activation_hook( __FILE__, [ 'CFTG_Funnel',  'maybe_create_table' ] );
 add_action( 'plugins_loaded',       [ 'CFTG_Entries', 'maybe_create_table' ] );
 add_action( 'plugins_loaded',       [ 'CFTG_Funnel',  'maybe_create_table' ] );
 
+/* ── Funnel events are pruned daily (see CFTG_Funnel::KEEP_MONTHS) ── */
+register_activation_hook( __FILE__,   [ 'CFTG_Funnel', 'schedule_prune' ] );
+register_deactivation_hook( __FILE__, [ 'CFTG_Funnel', 'unschedule_prune' ] );
+add_action( 'plugins_loaded',         [ 'CFTG_Funnel', 'schedule_prune' ] );
+add_action( 'cftg_funnel_prune',      [ 'CFTG_Funnel', 'prune_old_events' ] );
+
 /* ── Clear leftover rate-limit transients (removed in 1.7.5) ── */
 add_action( 'plugins_loaded', function() {
     if ( get_option( 'cftg_rl_cleared_175' ) ) return;

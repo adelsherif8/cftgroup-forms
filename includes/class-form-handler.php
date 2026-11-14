@@ -31,7 +31,6 @@ class CFTG_Form_Handler {
         $step      = intval( $_POST['step']                   ?? 0 );
         $page_id   = absint( $_POST['page_id']                ?? 0 );
         $page_url  = esc_url_raw( $_POST['page_url']          ?? '' );
-        $ua        = sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 
         /* A phone tap belongs to the page, not to a form, so it is filed
            under 'site' when it happens away from one. */
@@ -39,7 +38,8 @@ class CFTG_Form_Handler {
 
         $allowed = [ 'view', 'start', 'step', 'submit', 'call' ];
         if ( $session && $form_type && in_array( $event, $allowed, true ) ) {
-            CFTG_Funnel::track( $session, $form_type, $event, $step, $page_url, $this->get_ip(), $ua, $page_id );
+            /* No IP, no user agent: counting visitors needs neither. */
+            CFTG_Funnel::track( $session, $form_type, $event, $step, $page_url, '', '', $page_id );
         }
         wp_send_json_success();
     }
