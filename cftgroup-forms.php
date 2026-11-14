@@ -114,6 +114,7 @@ function cftg_enqueue_frontend() {
     wp_localize_script( 'cftg-forms', 'cftgData', [
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
         'nonce'   => wp_create_nonce( 'cftg_submit' ),
+        'pageId'  => get_queried_object_id(),
     ]);
     wp_localize_script( 'cftg-quiz', 'cftgData', [
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),

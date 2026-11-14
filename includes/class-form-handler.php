@@ -17,18 +17,29 @@ class CFTG_Form_Handler {
         add_action( 'wp_ajax_nopriv_cftg_track',      [ $this, 'handle_track' ] );
     }
 
-    /* ── Record a funnel event (no nonce — public tracking) ── */
+    /* ── Record a funnel event ──
+       Public on purpose: the visitor is not logged in and the page may be
+       served from a cache, where a nonce would already have expired and the
+       event would be silently lost. Nothing here is trusted — the event must
+       be one of a fixed list, everything is sanitised, and the columns are
+       length-capped on the way in. */
     public function handle_track(): void {
         nocache_headers();
         $session   = sanitize_text_field( $_POST['session']   ?? '' );
         $form_type = sanitize_key( $_POST['form_type']        ?? '' );
         $event     = sanitize_key( $_POST['event']            ?? '' );
         $step      = intval( $_POST['step']                   ?? 0 );
+        $page_id   = absint( $_POST['page_id']                ?? 0 );
         $page_url  = esc_url_raw( $_POST['page_url']          ?? '' );
         $ua        = sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 
-        if ( $session && $form_type && in_array( $event, [ 'view', 'step', 'submit' ], true ) ) {
-            CFTG_Funnel::track( $session, $form_type, $event, $step, $page_url, $this->get_ip(), $ua );
+        /* A phone tap belongs to the page, not to a form, so it is filed
+           under 'site' when it happens away from one. */
+        if ( $event === 'call' && $form_type === '' ) $form_type = 'site';
+
+        $allowed = [ 'view', 'start', 'step', 'submit', 'call' ];
+        if ( $session && $form_type && in_array( $event, $allowed, true ) ) {
+            CFTG_Funnel::track( $session, $form_type, $event, $step, $page_url, $this->get_ip(), $ua, $page_id );
         }
         wp_send_json_success();
     }

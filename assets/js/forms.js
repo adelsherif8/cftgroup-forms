@@ -18,16 +18,30 @@
     }
   }
   function track( formType, event, step ) {
-    const d = new FormData();
-    d.append( 'action',    'cftg_track' );
-    d.append( 'session',   getSessionId() );
-    d.append( 'form_type', formType );
-    d.append( 'event',     event );
-    d.append( 'step',      String( step || 0 ) );
-    d.append( 'page_url',  window.location.origin + window.location.pathname );
-    /* Fire-and-forget. Keep alive so it survives navigation. */
-    fetch( cftgData.ajaxUrl, { method: 'POST', body: d, keepalive: true } ).catch( () => {} );
+    try {
+      const d = new FormData();
+      d.append( 'action',    'cftg_track' );
+      d.append( 'session',   getSessionId() );
+      d.append( 'form_type', formType );
+      d.append( 'event',     event );
+      d.append( 'step',      String( step || 0 ) );
+      d.append( 'page_id',   String( ( window.cftgData && cftgData.pageId ) || 0 ) );
+      d.append( 'page_url',  window.location.origin + window.location.pathname );
+      /* Fire-and-forget. Keep alive so it survives navigation. */
+      fetch( cftgData.ajaxUrl, { method: 'POST', body: d, keepalive: true } ).catch( () => {} );
+    } catch ( e ) {}
   }
+
+  /* ── Phone clicks ──
+     Most visitors on a phone call rather than fill anything in, so a tap on a
+     tel: link is a conversion too. Tracked on every page, form or not, and
+     never allowed to delay the call itself. */
+  document.addEventListener( 'click', function ( e ) {
+    const link = e.target && e.target.closest ? e.target.closest( 'a[href^="tel:"]' ) : null;
+    if ( ! link ) return;
+    const form = link.closest( '.cftg-wrap' );
+    track( form ? form.dataset.formType : 'site', 'call', 0 );
+  }, true );
 
   class CftgForm {
     constructor( wrap ) {
@@ -48,6 +62,13 @@
          Step 1 fires only when the user actually engages (focus or click). */
       track( this.formType, 'view', 0 );
       const firstStep = () => {
+        /* 'start' = they actually engaged, as opposed to just loading the page */
+        try {
+          if ( ! sessionStorage.getItem( 'cftg_started_' + this.formType ) ) {
+            sessionStorage.setItem( 'cftg_started_' + this.formType, '1' );
+            track( this.formType, 'start', 0 );
+          }
+        } catch ( err ) { track( this.formType, 'start', 0 ); }
         this._trackStep( 1 );
         this.wrap.removeEventListener( 'focusin', firstStep );
         this.wrap.removeEventListener( 'click',   firstStep );

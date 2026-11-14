@@ -267,6 +267,12 @@ function cftg_render_funnel_page(): void {
                 ? 'Visitor reached ' . $page_url_arg
                 : 'Visitor reached the landing page';
             $rows[] = [ 'label' => $landing_label, 'count' => $views ];
+            /* Only shown once the 'start' event has data, so historical ranges
+               are not padded with an empty row. */
+            $starts = CFTG_Funnel::starts( $ft, $start_dt, $end_dt, $page_url_arg );
+            if ( $starts > 0 ) {
+                $rows[] = [ 'label' => 'Started the form (first interaction)', 'count' => $starts ];
+            }
             for ( $i = 1; $i <= ( $meta['steps'] ?? 1 ); $i++ ) {
                 $rows[] = [
                     'label' => $labels[ $i ] ?? ( 'Step ' . $i ),
@@ -382,6 +388,41 @@ function cftg_render_funnel_page(): void {
         </div>
 
         <?php endforeach; ?>
+
+        <?php
+        /* ── Phone clicks ── */
+        $call_taps   = CFTG_Funnel::calls_total( $start_dt, $end_dt );
+        $call_people = CFTG_Funnel::calls_people( $start_dt, $end_dt );
+        $call_pages  = CFTG_Funnel::calls_by_page( $start_dt, $end_dt );
+        ?>
+        <div class="cftg-fnl-section">
+            <h3 class="cftg-fnl-title">Phone Clicks</h3>
+            <p class="cftg-fnl-subtitle">Taps on a phone number anywhere on the site — the other way visitors get in touch. Counted across all pages, not just the form pages.</p>
+
+            <?php if ( $call_taps === 0 ): ?>
+                <div class="cftg-fnl-empty" style="padding:18px">
+                    No phone clicks recorded in this range yet.
+                </div>
+            <?php else: ?>
+                <p class="cftg-fnl-stats">
+                    <?php echo intval( $call_taps ); ?> taps from <?php echo intval( $call_people ); ?> visitors.
+                </p>
+                <?php
+                $cmax = max( 1, intval( $call_pages[0]['taps'] ?? 1 ) );
+                foreach ( $call_pages as $cp ):
+                    $w = round( intval( $cp['taps'] ) / $cmax * 100 );
+                ?>
+                <div class="cftg-fnl-row">
+                    <div class="cftg-fnl-label" title="<?php echo esc_attr( $cp['page_url'] ); ?>"><?php echo esc_html( $cp['page_url'] !== '' ? $cp['page_url'] : '(unknown page)' ); ?></div>
+                    <div class="cftg-fnl-bar-track">
+                        <div class="cftg-fnl-bar" style="width:<?php echo esc_attr( $w ); ?>%"></div>
+                    </div>
+                    <div class="cftg-fnl-count"><?php echo intval( $cp['taps'] ); ?></div>
+                    <div class="cftg-fnl-share"><?php echo intval( $cp['people'] ); ?> ppl</div>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
     </div>
     <?php
 }

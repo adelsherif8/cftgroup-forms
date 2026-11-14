@@ -3,7 +3,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class CFTG_Funnel {
 
-    const DB_VERSION = '1.0';
+    /* 1.1 adds page_id + the composite indexes the reports read by. Bumping
+       this re-runs dbDelta on upgrade, so existing sites get the column
+       without reactivating the plugin. */
+    const DB_VERSION = '1.1';
     const OPTION_KEY = 'cftg_funnel_db_version';
 
     public static function table_name(): string {
@@ -25,6 +28,7 @@ class CFTG_Funnel {
             form_type VARCHAR(32) NOT NULL DEFAULT '',
             event VARCHAR(20) NOT NULL DEFAULT '',
             step_num SMALLINT NOT NULL DEFAULT 0,
+            page_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
             page_url VARCHAR(500) NOT NULL DEFAULT '',
             ip VARCHAR(45) NOT NULL DEFAULT '',
             ua VARCHAR(255) NOT NULL DEFAULT '',
@@ -33,7 +37,9 @@ class CFTG_Funnel {
             KEY form_type (form_type),
             KEY session_id (session_id),
             KEY event (event),
-            KEY created_at (created_at)
+            KEY created_at (created_at),
+            KEY form_event_time (form_type,event,created_at),
+            KEY page_event_time (page_id,event,created_at)
         ) $charset;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -43,14 +49,16 @@ class CFTG_Funnel {
     }
 
     /* ── Record an event. De-dupes view/step events per session ── */
-    public static function track( string $session_id, string $form_type, string $event, int $step_num = 0, string $page_url = '', string $ip = '', string $ua = '' ): void {
+    public static function track( string $session_id, string $form_type, string $event, int $step_num = 0, string $page_url = '', string $ip = '', string $ua = '', int $page_id = 0 ): void {
         if ( $session_id === '' || $form_type === '' || $event === '' ) return;
 
         global $wpdb;
         $table = self::table_name();
 
-        /* Skip duplicate view/step events for same session — only count first reach */
-        if ( in_array( $event, [ 'view', 'step' ], true ) ) {
+        /* Skip duplicate view/start/step events for same session — only count
+           the first reach. Calls are never de-duped: two phone taps are two
+           phone taps. */
+        if ( in_array( $event, [ 'view', 'start', 'step' ], true ) ) {
             $exists = $wpdb->get_var( $wpdb->prepare(
                 "SELECT id FROM $table WHERE session_id=%s AND form_type=%s AND event=%s AND step_num=%d LIMIT 1",
                 $session_id, $form_type, $event, $step_num
@@ -63,11 +71,12 @@ class CFTG_Funnel {
             'form_type'  => substr( $form_type, 0, 32 ),
             'event'      => substr( $event, 0, 20 ),
             'step_num'   => $step_num,
+            'page_id'    => $page_id,
             'page_url'   => substr( $page_url, 0, 500 ),
             'ip'         => substr( $ip, 0, 45 ),
             'ua'         => substr( $ua, 0, 255 ),
             'created_at' => current_time( 'mysql' ),
-        ], [ '%s','%s','%s','%d','%s','%s','%s','%s' ] );
+        ], [ '%s','%s','%s','%d','%d','%s','%s','%s','%s' ] );
     }
 
     /* ── Funnel summary for a form type within a date range ──
@@ -119,6 +128,52 @@ class CFTG_Funnel {
         }
         ksort( $out );
         return $out;
+    }
+
+    /* Visitors who actually engaged with the form, not just loaded the page. */
+    public static function starts( string $form_type, string $start, string $end, string $page_url = '' ): int {
+        global $wpdb;
+        $table = self::table_name();
+        $where = $wpdb->prepare( "form_type=%s AND created_at BETWEEN %s AND %s", $form_type, $start, $end );
+        if ( $page_url !== '' ) $where .= $wpdb->prepare( ' AND page_url=%s', $page_url );
+        return (int) $wpdb->get_var( "SELECT COUNT(DISTINCT session_id) FROM $table WHERE $where AND event='start'" );
+    }
+
+    /* ── Phone clicks ──
+       Every tap on a tel: link, which is how most mobile visitors actually
+       get in touch. Not de-duped, so this is taps, not people. ── */
+    public static function calls_total( string $start, string $end ): int {
+        global $wpdb;
+        $table = self::table_name();
+        return (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM $table WHERE event='call' AND created_at BETWEEN %s AND %s",
+            $start, $end
+        ) );
+    }
+
+    public static function calls_people( string $start, string $end ): int {
+        global $wpdb;
+        $table = self::table_name();
+        return (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(DISTINCT session_id) FROM $table WHERE event='call' AND created_at BETWEEN %s AND %s",
+            $start, $end
+        ) );
+    }
+
+    /* Pages that produced the most phone clicks. */
+    public static function calls_by_page( string $start, string $end, int $limit = 10 ): array {
+        global $wpdb;
+        $table = self::table_name();
+        $rows = $wpdb->get_results( $wpdb->prepare(
+            "SELECT page_url, COUNT(*) AS taps, COUNT(DISTINCT session_id) AS people
+             FROM $table
+             WHERE event='call' AND created_at BETWEEN %s AND %s
+             GROUP BY page_url
+             ORDER BY taps DESC
+             LIMIT %d",
+            $start, $end, $limit
+        ), ARRAY_A );
+        return $rows ?: [];
     }
 
     /* ── List distinct page URLs that have seen events. Empty form_type
