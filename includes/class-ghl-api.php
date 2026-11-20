@@ -93,6 +93,8 @@ class CFTG_GHL_API {
         }
 
         $err = $body['message'] ?? $body['msg'] ?? 'Unknown GHL error.';
+        /* 422s come back as a list, e.g. ["email must be an email"] */
+        if ( is_array( $err ) ) $err = implode( '; ', array_map( 'strval', $err ) );
         return array_merge( $base_return, [
             'success' => false,
             'message' => "GHL error ({$code}): {$err}",

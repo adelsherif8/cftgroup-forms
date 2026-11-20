@@ -25,6 +25,12 @@ function cftg_handle_save_settings() {
     if ( isset( $_POST[ $key ] ) ) update_option( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
   }
 
+  /* Failed-lead alert recipients: keep only valid addresses */
+  if ( isset( $_POST['cftg_alert_emails'] ) ) {
+    $emails = array_filter( array_map( 'trim', explode( ',', wp_unslash( $_POST['cftg_alert_emails'] ) ) ), 'is_email' );
+    update_option( 'cftg_alert_emails', implode( ', ', array_map( 'sanitize_email', $emails ) ) );
+  }
+
   /* Form design settings */
   foreach ( [ 'vehicle_quote', 'scrap_metal', 'bin_estimate' ] as $ft ) {
     $key = "cftg_design_{$ft}";
@@ -143,6 +149,13 @@ function cftg_tab_connection() {
           <input type="password" id="cftg_ghl_api_key" name="cftg_ghl_api_key" value="<?php echo esc_attr( $api_key ); ?>" class="regular-text" placeholder="eyJ...">
           <button type="button" class="button" id="cftg-toggle-key" style="margin-left:8px">Show</button>
           <p class="description">GHL → Settings → Business Info → Private Integration → API Key</p>
+        </td>
+      </tr>
+      <tr>
+        <th><label for="cftg_alert_emails">Failed lead alerts</label></th>
+        <td>
+          <input type="text" id="cftg_alert_emails" name="cftg_alert_emails" value="<?php echo esc_attr( get_option( 'cftg_alert_emails', '' ) ); ?>" class="regular-text" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+          <p class="description">Emailed with the lead's name, phone and answers whenever a submission doesn't reach GHL. Separate several with commas. Empty = site admin email.</p>
         </td>
       </tr>
     </table>

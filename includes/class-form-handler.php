@@ -191,10 +191,71 @@ class CFTG_Form_Handler {
             $result['message'] ?? ''
         );
 
+        /* Tell the team by email when a lead did not make it into GHL (or got
+           in but its workflows can't fire), so someone can still call them.
+           A mail problem must never fail the visitor's submission. */
+        if ( ! $result['success'] ) {
+            $this->send_failure_alert( $type, $entry_id, $form_data, 'Not sent to GoHighLevel — ' . ( $result['message'] ?? 'unknown error' ) );
+        } elseif ( $retag_result !== null && empty( $retag_result['success'] ) ) {
+            $this->send_failure_alert( $type, $entry_id, $form_data, 'Saved in GoHighLevel, but re-adding the form tag failed (HTTP ' . (int) $retag_result['http'] . '), so lead workflows probably did not run.' );
+        }
+
         if ( $result['success'] ) {
             wp_send_json_success( [ 'message' => 'Submitted successfully.' ] );
         } else {
             wp_send_json_error( [ 'message' => $result['message'] ?? 'Submission failed.' ] );
+        }
+    }
+
+    /* ── Email the team about a lead that needs a manual follow-up ──
+       Recipients come from Settings → Connection → "Failed lead alerts";
+       empty falls back to the site admin email. Uses the entry as saved, so
+       the email shows exactly what the visitor typed (even an invalid email
+       that was stripped before sending to GHL). */
+    private function send_failure_alert( string $type, int $entry_id, array $form_data, string $reason ): void {
+        try {
+            $to = array_values( array_filter( array_map( 'trim', explode( ',', get_option( 'cftg_alert_emails', '' ) ) ), 'is_email' ) );
+            if ( ! $to ) $to = [ get_option( 'admin_email' ) ];
+
+            $f      = $this->clean( $_POST );
+            $name   = trim( ( $f['first_name'] ?? '' ) . ' ' . ( $f['last_name'] ?? '' ) ) ?: 'Unknown name';
+            $labels = [
+                'bin_estimate'     => 'Bin Estimate',
+                'scrap_metal'      => 'Scrap Metal',
+                'vehicle_quote'    => 'Vehicle Quote',
+                'vehicle_quote_v2' => 'Vehicle Quote',
+            ];
+            $form = $labels[ $type ] ?? $type;
+
+            $lines = [
+                "A website lead needs a manual follow-up. Please call them.",
+                '',
+                "Problem: {$reason}",
+                '',
+                'Name:    ' . $name,
+                'Phone:   ' . ( $f['phone']  ?? '' ),
+                'Email:   ' . ( $f['email']  ?? '' ),
+                'Postal:  ' . ( $f['postal'] ?? '' ),
+                'Form:    ' . $form,
+                'Time:    ' . wp_date( 'M j, Y g:i A' ),
+                'Page:    ' . esc_url_raw( wp_get_referer() ?: '' ),
+                '',
+                'Answers:',
+            ];
+            foreach ( $form_data as $k => $v ) {
+                if ( $k === '' || $k[0] === '_' || $v === '' ) continue;
+                $lines[] = '  ' . ucwords( str_replace( '_', ' ', $k ) ) . ': ' . $v;
+            }
+            $lines[] = '';
+            $lines[] = 'Entry: ' . admin_url( 'admin.php?page=cftg-entries&view=' . $entry_id );
+
+            wp_mail(
+                $to,
+                "Failed lead: {$name} ({$form}) — call " . ( $f['phone'] ?? '' ),
+                implode( "\n", $lines )
+            );
+        } catch ( \Throwable $e ) {
+            /* Never let an alert break the submission response. */
         }
     }
 
